@@ -1,0 +1,247 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   Server.cpp                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/31 12:37:24 by albernar          #+#    #+#             */
+/*   Updated: 2025/03/31 21:24:36 by albernar         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "Server.hpp"
+
+Server		*Server::instance = NULL;
+Commands	*Server::commands = NULL;
+
+Server::Server(long serverPort, std::string &serverPassword) : isRunning(true), serverSocket(-1),
+	epollInstance(-1), serverPort(serverPort),
+	serverPassword(serverPassword)
+{
+	instance = this;
+	commands = new Commands();
+	signal(SIGINT, Server::signalHandler);
+	signal(SIGQUIT, Server::signalHandler);
+}
+
+IRCCommand	parseIRCCommand(std::string	message) {
+	IRCCommand			ircCommand;
+	std::istringstream	stream(message);
+	std::string			word;
+	std::string			trailing;
+
+	if (stream >> ircCommand.command) {
+		while (stream >> word) {
+			if (!word.empty() && word[0] == ':') {
+				trailing = word.substr(1);
+				while (stream >> word)
+					trailing += " " + word;
+				ircCommand.params.push_back(trailing);
+				break ;
+			}
+			ircCommand.params.push_back(word);
+		}
+	}
+	return (ircCommand);
+}
+
+Server::~Server(void) {
+	Server::stopServer();
+	delete commands;
+}
+
+void	Server::signalHandler(int signal) {
+	if (signal == SIGINT || signal == SIGQUIT) {
+		std::cout << "Stopping server..." << std::endl;
+		if (Server::instance)
+			Server::instance->stopServer();
+	}
+}
+
+void	Server::serverInit(void) {
+	struct hostent		*host;
+    struct sockaddr_in	serverAddr;
+	struct sockaddr_in	tmp;
+	socklen_t			tmpLen;
+    int					optval;
+	char				hostname[256];
+
+	optval = 1;
+	tmpLen = sizeof(tmp);
+    serverSocket = socket(AF_INET, SOCK_STREAM, 0);
+    if (serverSocket < 0)
+        throw std::runtime_error("Error creating socket");
+    if (setsockopt(serverSocket, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval)) < 0)
+        throw std::runtime_error("Error setting socket options");
+    if (fcntl(serverSocket, F_SETFL, O_NONBLOCK) < 0)
+        throw std::runtime_error("Error setting socket to non-blocking mode");
+    std::memset(&serverAddr, 0, sizeof(serverAddr));
+    serverAddr.sin_family = AF_INET;
+    serverAddr.sin_addr.s_addr = INADDR_ANY;
+    serverAddr.sin_port = htons(serverPort);
+    if (bind(serverSocket, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) < 0)
+        throw std::runtime_error("Error binding socket");
+    if (listen(serverSocket, SOMAXCONN) < 0)
+		throw std::runtime_error("Error listening on socket");
+	if (gethostname(hostname, sizeof(hostname)) < 0)
+		throw std::runtime_error("Error getting hostname");
+	host = gethostbyname(hostname);
+	if (!host)
+		throw std::runtime_error("Error getting host by name");
+	this->serverIp = inet_ntoa(*(struct in_addr*)host->h_addr_list[0]);
+	std::cout << "-----------------" << std::endl;
+	std::cout << "IP > " << this->serverIp << std::endl; 
+	std::cout << "Port > " << serverPort << std::endl;
+	std::cout << "-----------------" << std::endl;
+    Server::runServer();
+}
+
+void	Server::runServer(void) {
+	struct epoll_event	events[1024];
+    struct epoll_event	serverEvent;
+	int					eventCount;
+
+    epollInstance = epoll_create1(0);
+    if (epollInstance < 0)
+		throw std::runtime_error("Error creating epoll instance");
+    serverEvent.events = EPOLLIN;
+    serverEvent.data.fd = serverSocket;
+    if (epoll_ctl(epollInstance, EPOLL_CTL_ADD, serverSocket, &serverEvent) < 0)
+        throw std::runtime_error("Error adding server socket to epoll");
+    while (isRunning) {
+        eventCount = epoll_wait(epollInstance, events, 1024, -1);
+        if (eventCount < 0)
+		{
+			if (errno == EINTR)
+				continue ;
+            throw std::runtime_error("Error in epoll_wait");
+		}
+        for (int i = 0; i < eventCount; i++) {
+            if (events[i].data.fd == serverSocket)
+                Server::acceptNewClient();
+            else
+                Server::handleClientMessage(this->clients[events[i].data.fd]);
+        }
+    }
+}
+
+void	Server::stopServer(void) {
+    isRunning = false;
+    for (std::map<int, Client*>::iterator it = this->clients.begin(); it != this->clients.end(); ++it) {
+        close(it->first);
+        delete it->second;
+    }
+    this->clients.clear();
+    if (serverSocket >= 0) {
+        close(serverSocket);
+        serverSocket = -1;
+    }
+    if (epollInstance >= 0) {
+        close(epollInstance);
+        epollInstance = -1;
+    }
+}
+
+void	Server::disconnectClient(Client *client) {
+	int	clientFd;
+
+    if (!client)
+        return;
+    clientFd = client->getFd();
+    if (epoll_ctl(epollInstance, EPOLL_CTL_DEL, clientFd, NULL) < 0)
+        std::cerr << "Error removing client from epoll" << std::endl;
+    close(clientFd);
+    this->clients.erase(clientFd);
+    delete client;
+}
+
+void	Server::sendMessage(int fd, std::string message) {
+	if (message.empty())
+		return ;
+	if (send(fd, message.c_str(), message.length(), 0) < 0)
+		std::cerr << "Error sending message to server" << std::endl;
+}
+
+void	Server::processClientMessage(Client *client, const std::string &message) {
+	IRCCommand	ircCommand;
+
+	ircCommand = parseIRCCommand(message);
+	if (ircCommand.command == "NICK")
+		Server::sendMessage(client->getFd(), this->commands->nickCommand(client, this->instance, ircCommand));
+}
+
+void	Server::handleClientMessage(Client *client) {
+    char		buffer[1024];
+    int			bytesRead;
+	std::string	tmpBuffer;
+	std::string	message;
+    size_t		pos;
+
+	while ((bytesRead = recv(client->getFd(), buffer, sizeof(buffer) - 1, 0)) > 0) {
+		buffer[bytesRead] = '\0';
+		client->appendToBuffer(buffer);	
+	}
+    if (bytesRead == 0) {
+        std::cout << "Client disconnected" << std::endl;
+        Server::disconnectClient(client);
+        return ;
+    }
+    else if (bytesRead < 0 && errno != EAGAIN && errno != EWOULDBLOCK) {
+        std::cerr << "Error reading from client" << std::endl;
+        Server::disconnectClient(client);
+        return ;
+    }
+	tmpBuffer = client->getBuffer();
+    while ((pos = tmpBuffer.find("\r\n")) != std::string::npos) {
+        message = tmpBuffer.substr(0, pos);
+        tmpBuffer = tmpBuffer.substr(pos + 2);
+        if (!message.empty())
+        	Server::processClientMessage(client, message);
+    }
+    client->clearBuffer();
+    if (!tmpBuffer.empty())
+        client->appendToBuffer(tmpBuffer);
+}
+
+void	Server::acceptNewClient(void) {
+    struct sockaddr_in		clientAddr;
+    socklen_t				clientAddrLen;
+	int						newClientFd;
+	struct epoll_event		clientEvent;
+	struct in_addr			addr;
+	struct hostent			*host;
+	std::string				ip;
+
+	clientAddrLen = sizeof(clientAddr);
+    newClientFd = accept(serverSocket, (struct sockaddr*)&clientAddr, &clientAddrLen);
+    if (newClientFd < 0) {
+        std::cerr << "Error accepting client connection" << std::endl;
+        return ;
+    }
+    if (fcntl(newClientFd, F_SETFL, O_NONBLOCK) < 0) {
+        close(newClientFd);
+        std::cerr << "Error setting client socket to non-blocking mode" << std::endl;
+        return ;
+    }
+    clientEvent.events = EPOLLIN;
+    clientEvent.data.fd = newClientFd;
+    if (epoll_ctl(epollInstance, EPOLL_CTL_ADD, newClientFd, &clientEvent) < 0) {
+        close(newClientFd);
+        std::cerr << "Error adding client socket to epoll" << std::endl;
+        return ;
+    }
+	addr.s_addr = inet_addr(this->serverIp.c_str());
+	if (addr.s_addr == INADDR_NONE) {
+		std::cerr << "Error converting IP address" << std::endl;
+		close(newClientFd);
+		return ;
+	}
+	host = gethostbyaddr((const char *)&addr, sizeof(addr), AF_INET);
+	if (host && host->h_name)
+		ip = host->h_name;
+	else
+		ip = this->serverIp;
+    this->clients[newClientFd] = new Client(newClientFd, ip);
+    std::cout << "New client connected" << std::endl;
+}
