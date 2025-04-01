@@ -5,63 +5,45 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/31 12:37:24 by albernar          #+#    #+#             */
-/*   Updated: 2025/03/31 21:24:36 by albernar         ###   ########.fr       */
+/*   Created: 2025/04/01 17:13:18 by albernar          #+#    #+#             */
+/*   Updated: 2025/04/01 19:52:20 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 
-Server		*Server::instance = NULL;
-Commands	*Server::commands = NULL;
+Server	*Server::instance = NULL;
 
-Server::Server(long serverPort, std::string &serverPassword) : isRunning(true), serverSocket(-1),
-	epollInstance(-1), serverPort(serverPort),
-	serverPassword(serverPassword)
-{
-	instance = this;
-	commands = new Commands();
-	signal(SIGINT, Server::signalHandler);
-	signal(SIGQUIT, Server::signalHandler);
+Server *Server::getInstance(void) { return instance; };
+
+void	Server::signalHandler(int signum) {
+	if (signum == SIGINT || signum == SIGQUIT) {
+		std::cout << "Stopping server..." << std::endl;
+		if (instance)
+			instance->stopServer();
+	}
 }
 
-IRCCommand	parseIRCCommand(std::string	message) {
-	IRCCommand			ircCommand;
-	std::istringstream	stream(message);
-	std::string			word;
-	std::string			trailing;
-
-	if (stream >> ircCommand.command) {
-		while (stream >> word) {
-			if (!word.empty() && word[0] == ':') {
-				trailing = word.substr(1);
-				while (stream >> word)
-					trailing += " " + word;
-				ircCommand.params.push_back(trailing);
-				break ;
-			}
-			ircCommand.params.push_back(word);
-		}
-	}
-	return (ircCommand);
+Server::Server(long serverPort, std::string serverPassword) {
+	this->serverPort = serverPort;
+	this->serverPassword = serverPassword;
+	this->isRunning = true;
+	this->serverSocket = -1;
+	this->epollInstance = -1;
+	this->instance = this;
+	this->commandHandler = new CommandHandler(instance);
+	signal(SIGINT, Server::signalHandler);
+	signal(SIGQUIT, Server::signalHandler);	
 }
 
 Server::~Server(void) {
-	Server::stopServer();
-	delete commands;
-}
-
-void	Server::signalHandler(int signal) {
-	if (signal == SIGINT || signal == SIGQUIT) {
-		std::cout << "Stopping server..." << std::endl;
-		if (Server::instance)
-			Server::instance->stopServer();
-	}
+	this->stopServer();
+	delete this->commandHandler;
 }
 
 void	Server::serverInit(void) {
 	struct hostent		*host;
-    struct sockaddr_in	serverAddr;
+	struct sockaddr_in	serverAddr;
 	struct sockaddr_in	tmp;
 	socklen_t			tmpLen;
     int					optval;
@@ -127,8 +109,8 @@ void	Server::runServer(void) {
 }
 
 void	Server::stopServer(void) {
-    isRunning = false;
-    for (std::map<int, Client*>::iterator it = this->clients.begin(); it != this->clients.end(); ++it) {
+	this->isRunning = false;
+	for (std::map<int, Client*>::iterator it = this->clients.begin(); it != this->clients.end(); ++it) {
         close(it->first);
         delete it->second;
     }
@@ -143,6 +125,12 @@ void	Server::stopServer(void) {
     }
 }
 
+std::map<int, Client*>	Server::getClients(void) const { return this->clients; }
+
+std::map<std::string, Channel *>	Server::getChannels(void) const { return this->channels; }
+
+std::string	Server::getServerIp(void) const { return this->serverIp; }
+
 void	Server::disconnectClient(Client *client) {
 	int	clientFd;
 
@@ -156,56 +144,8 @@ void	Server::disconnectClient(Client *client) {
     delete client;
 }
 
-void	Server::sendMessage(int fd, std::string message) {
-	if (message.empty())
-		return ;
-	if (send(fd, message.c_str(), message.length(), 0) < 0)
-		std::cerr << "Error sending message to server" << std::endl;
-}
-
-void	Server::processClientMessage(Client *client, const std::string &message) {
-	IRCCommand	ircCommand;
-
-	ircCommand = parseIRCCommand(message);
-	if (ircCommand.command == "NICK")
-		Server::sendMessage(client->getFd(), this->commands->nickCommand(client, this->instance, ircCommand));
-}
-
-void	Server::handleClientMessage(Client *client) {
-    char		buffer[1024];
-    int			bytesRead;
-	std::string	tmpBuffer;
-	std::string	message;
-    size_t		pos;
-
-	while ((bytesRead = recv(client->getFd(), buffer, sizeof(buffer) - 1, 0)) > 0) {
-		buffer[bytesRead] = '\0';
-		client->appendToBuffer(buffer);	
-	}
-    if (bytesRead == 0) {
-        std::cout << "Client disconnected" << std::endl;
-        Server::disconnectClient(client);
-        return ;
-    }
-    else if (bytesRead < 0 && errno != EAGAIN && errno != EWOULDBLOCK) {
-        std::cerr << "Error reading from client" << std::endl;
-        Server::disconnectClient(client);
-        return ;
-    }
-	tmpBuffer = client->getBuffer();
-    while ((pos = tmpBuffer.find("\r\n")) != std::string::npos) {
-        message = tmpBuffer.substr(0, pos);
-        tmpBuffer = tmpBuffer.substr(pos + 2);
-        if (!message.empty())
-        	Server::processClientMessage(client, message);
-    }
-    client->clearBuffer();
-    if (!tmpBuffer.empty())
-        client->appendToBuffer(tmpBuffer);
-}
-
 void	Server::acceptNewClient(void) {
-    struct sockaddr_in		clientAddr;
+	struct sockaddr_in		clientAddr;
     socklen_t				clientAddrLen;
 	int						newClientFd;
 	struct epoll_event		clientEvent;
@@ -244,4 +184,59 @@ void	Server::acceptNewClient(void) {
 		ip = this->serverIp;
     this->clients[newClientFd] = new Client(newClientFd, ip);
     std::cout << "New client connected" << std::endl;
+}
+
+
+void	Server::processClientMessage(Client *client, const std::string &message) {
+	IRCCommand	ircCommand;
+
+	ircCommand = parseIRCCommand(message);
+	std::cout << "Received command: " << ircCommand.command << std::endl;
+	for (std::vector<std::string>::iterator it = ircCommand.params.begin(); it != ircCommand.params.end(); ++it)
+		std::cout << "Param: " << *it << std::endl;
+	if (!client->isAuth())
+	{
+		if (client->getAuthPhase() == 0 && ircCommand.command == "PASS")
+			client->setAuthPhase(0, ircCommand, this->serverPassword);
+		else if (client->getAuthPhase() == 1 && ircCommand.command == "NICK")
+			client->setAuthPhase(1, ircCommand);
+		else if (client->getAuthPhase() == 2 && ircCommand.command == "USER")
+			client->setAuthPhase(2, ircCommand);
+		return ;
+	}
+	if (ircCommand.command == "NICK")
+		this->commandHandler->nickCommand(client, ircCommand);
+}
+
+void	Server::handleClientMessage(Client *client) {
+    char		buffer[1024];
+    int			bytesRead;
+	std::string	tmpBuffer;
+	std::string	message;
+    size_t		pos;
+
+	while ((bytesRead = recv(client->getFd(), buffer, sizeof(buffer) - 1, 0)) > 0) {
+		buffer[bytesRead] = '\0';
+		client->appendToBuffer(buffer);	
+	}
+    if (bytesRead == 0) {
+        std::cout << "Client disconnected" << std::endl;
+        Server::disconnectClient(client);
+        return ;
+    }
+    else if (bytesRead < 0 && errno != EAGAIN && errno != EWOULDBLOCK) {
+        std::cerr << "Error reading from client" << std::endl;
+        Server::disconnectClient(client);
+        return ;
+    }
+	tmpBuffer = client->getBuffer();
+    while ((pos = tmpBuffer.find("\r\n")) != std::string::npos) {
+        message = tmpBuffer.substr(0, pos);
+        tmpBuffer = tmpBuffer.substr(pos + 2);
+        if (!message.empty())
+        	Server::processClientMessage(client, message);
+    }
+    client->clearBuffer();
+    if (!tmpBuffer.empty())
+        client->appendToBuffer(tmpBuffer);
 }

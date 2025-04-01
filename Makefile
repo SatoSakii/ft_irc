@@ -6,7 +6,7 @@
 #    By: albernar <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/16 17:32:26 by albernar          #+#    #+#              #
-#    Updated: 2025/03/31 20:40:24 by albernar         ###   ########.fr        #
+#    Updated: 2025/04/01 18:14:24 by albernar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,11 @@ OBJ_DIR		=	.objs
 SRC_DIR		=	srcs
 
 # SOURCES
-SRCS		:=	main.cpp \
+SRCS		:=	Channel.cpp \
+				Client.cpp \
+				CommandHandler.cpp \
+				IRCUtils.cpp \
+				main.cpp \
 				Server.cpp \
 				commands/Nick.cpp
 

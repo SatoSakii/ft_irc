@@ -5,14 +5,13 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/31 11:13:06 by albernar          #+#    #+#             */
-/*   Updated: 2025/03/31 14:58:48 by albernar         ###   ########.fr       */
+/*   Created: 2025/04/01 17:45:53 by albernar          #+#    #+#             */
+/*   Updated: 2025/04/01 17:48:28 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <iostream>
-#include <cstdlib>
 #include "Server.hpp"
+#include <cstdlib>
 
 int main(int argc, char **argv) {
 	long		port;
