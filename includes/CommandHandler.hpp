@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 17:00:08 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/02 02:20:58 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/02 16:49:02 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ public:
 	CommandHandler(Server *server);
 	void	nickCommand(Client *client, IRCCommand ircCommand);
 	void	userCommand(Client *client, IRCCommand ircCommand);
-	bool	passCommand(Client *client, IRCCommand ircCommand);
+	void	passCommand(Client *&client, IRCCommand ircCommand);
 };
 
 # define ERR_MESSAGE(message) ("ERROR :" + message + "\r\n")

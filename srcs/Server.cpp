@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 17:13:18 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/02 02:24:22 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/02 17:19:45 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,11 +188,15 @@ void	Server::acceptNewClient(void) {
     std::cout << "New client connected" << std::endl;
 }
 
-bool	Server::CheckAuthProtocol(Client *client, IRCCommand ircCommand) {
+bool	Server::CheckAuthProtocol(Client *&client, IRCCommand ircCommand) {
 	if (client->getAuthLevel() == 0)
 	{
-		if (ircCommand.command == "PASS")
-			return this->commandHandler->passCommand(client, ircCommand);
+		if (ircCommand.command == "CAP")
+			return false;
+		if (ircCommand.command == "PASS") {
+			this->commandHandler->passCommand(client, ircCommand);
+			return true;
+		}
 		else {
 			client->sendMessage(ERR_NOTREGISTERED(this->serverIp, "*"));
 			return false;
@@ -202,6 +206,8 @@ bool	Server::CheckAuthProtocol(Client *client, IRCCommand ircCommand) {
 	{
 		if (ircCommand.command == "NICK") {
 			this->commandHandler->nickCommand(client, ircCommand);
+			if (client->getNickname().empty())
+				return false;
 			return true;
 		} else {
 			client->sendMessage(ERR_NOTREGISTERED(this->serverIp, "*"));
@@ -212,6 +218,8 @@ bool	Server::CheckAuthProtocol(Client *client, IRCCommand ircCommand) {
 	{
 		if (ircCommand.command == "USER") {
 			this->commandHandler->userCommand(client, ircCommand);
+			if (client->getUsername().empty())
+				return false;
 			client->setAuth(true);
 			return true;
 		} else {
@@ -222,18 +230,19 @@ bool	Server::CheckAuthProtocol(Client *client, IRCCommand ircCommand) {
 	return false;
 }
 
-void	Server::processClientMessage(Client *client, const std::string &message) {
+void	Server::processClientMessage(Client *&client, const std::string &message) {
 	IRCCommand	ircCommand;
 
+	if (!client)
+		return ;
 	ircCommand = parseIRCCommand(message);
 	std::cout << "Received command: " << ircCommand.command << std::endl;
 	for (std::vector<std::string>::iterator it = ircCommand.params.begin(); it != ircCommand.params.end(); ++it)
 		std::cout << "Param: " << *it << std::endl;
 	if (!client->isAuth())
 	{
-		if (Server::CheckAuthProtocol(client, ircCommand))
-			if (client)
-				client->setAuthLevel(client->getAuthLevel() + 1);
+		if (Server::CheckAuthProtocol(client, ircCommand) && client)
+			client->setAuthLevel(client->getAuthLevel() + 1);
 		return ;
 	}
 	if (ircCommand.command == "PASS" || ircCommand.command == "USER")
@@ -270,8 +279,8 @@ void	Server::handleClientMessage(Client *client) {
         if (!message.empty())
         	Server::processClientMessage(client, message);
     }
-	std::cout << std::hex << client << std::endl;
-    client->clearBuffer();
-    if (!tmpBuffer.empty())
+	if (client)
+    	client->clearBuffer();
+    if (client && !tmpBuffer.empty())
         client->appendToBuffer(tmpBuffer);
 }

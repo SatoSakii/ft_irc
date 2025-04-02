@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 17:41:36 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/02 02:01:26 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/02 17:23:24 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,6 @@ short	Client::getAuthLevel(void) const { return this->authLevel; }
 
 void	Client::setAuthLevel(short authLevel) {
 	this->authLevel = authLevel;
-	if (authLevel == 3)
-		this->auth = true;
-	else
-		this->auth = false;
 }
 
 std::string	Client::getHostname(void) const { return this->hostname; }

@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 17:08:50 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/02 01:53:12 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/02 16:45:54 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ private:
 
 	static Server					*getInstance(void);
 	static void						signalHandler(int signal);
-	bool							CheckAuthProtocol(Client *client, IRCCommand ircCommand);
+	bool							CheckAuthProtocol(Client *&client, IRCCommand ircCommand);
 
 	void							runServer(void);
 	void							stopServer(void);
@@ -55,7 +55,7 @@ private:
 	void							acceptNewClient(void);
 
 	void							handleClientMessage(Client *client);
-	void							processClientMessage(Client *client, const std::string &message);
+	void							processClientMessage(Client *&client, const std::string &message);
 public:
 	Server(long serverPort, std::string serverPassword);
 	~Server(void);
