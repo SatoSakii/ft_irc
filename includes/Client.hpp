@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 17:24:12 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/01 19:45:39 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/02 01:43:39 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,9 @@ class Client
 private:
 	int			fd;
 	bool		auth;
-	short		authPhase;
+	short		authLevel;
 	std::string	bufferMessage;
 	std::string	hostname;
-
 	std::string	nickname;
 	std::string	username;
 
@@ -32,8 +31,8 @@ public:
 	int			getFd(void) const;
 	bool		isAuth(void) const;
 	void		setAuth(bool auth);
-	short		getAuthPhase(void) const;
-	void		setAuthPhase(short authPhase, IRCCommand ircCommand, std::string password = "");
+	short		getAuthLevel(void) const;
+	void		setAuthLevel(short authLevel);
 
 	std::string	getHostname(void) const;
 

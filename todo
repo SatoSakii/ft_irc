@@ -1,0 +1,4 @@
+TODOUCE:
+	NICK Command [GOOD]
+	USER Command [GOOD]
+	PASS Command [LEAK ON BAD PASSWORD]

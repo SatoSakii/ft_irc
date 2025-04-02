@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 17:41:36 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/01 19:51:31 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/02 02:01:26 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,8 @@ Client::Client(int fd, std::string hostname) {
 	this->fd = fd;
 	this->hostname = hostname;
 	this->auth = false;
-	this->authPhase = 0;
+	this->authLevel = 0;
+	this->bufferMessage = "";
 	this->nickname = "";
 	this->username = "";
 }
@@ -29,25 +30,14 @@ void	Client::setAuth(bool auth) {
 	this->auth = auth;
 }
 
-short	Client::getAuthPhase(void) const { return this->authPhase; }
+short	Client::getAuthLevel(void) const { return this->authLevel; }
 
-void	Client::setAuthPhase(short authPhase, IRCCommand ircCommand, std::string password) {
-	if (authPhase < 0)
-		return ;
-	this->authPhase = authPhase;
-	if (authPhase == 0 && ircCommand.params.size() == 1 && ircCommand.params[0] == password)
-		this->authPhase++;
-	else if (authPhase == 1 && ircCommand.params.size() == 1)
-	{
-		this->setUsername(ircCommand.params[0]);
-		this->authPhase++;
-	}
-	else if (authPhase == 2 && ircCommand.params.size() == 1)
-	{
-		this->setNickname(ircCommand.params[0]);
-		this->authPhase = -1;
-		this->setAuth(true);
-	}
+void	Client::setAuthLevel(short authLevel) {
+	this->authLevel = authLevel;
+	if (authLevel == 3)
+		this->auth = true;
+	else
+		this->auth = false;
 }
 
 std::string	Client::getHostname(void) const { return this->hostname; }

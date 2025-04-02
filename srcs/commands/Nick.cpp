@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 17:03:18 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/01 18:41:04 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/02 00:03:11 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,30 +25,30 @@ void	CommandHandler::nickCommand(Client *client, IRCCommand ircCommand) {
 	std::string						returnValue;
 
 	if (ircCommand.params.size() < 1) {
-		client->sendMessage(IRCResponse::error(this->server->getServerIp(), 431, client->getNickname(), "No nickname given"));
+		client->sendMessage(ERR_NONICKNAMEGIVEN(this->server->getServerIp(), client->getNickname()));
 		return ;
 	}
 	nickname = ircCommand.params[0];
 	if (nickname.empty()) {
-		client->sendMessage(IRCResponse::error(this->server->getServerIp(), 431, client->getNickname(), "No nickname given"));
+		client->sendMessage(ERR_NONICKNAMEGIVEN(this->server->getServerIp(), client->getNickname()));
 		return ;
 	}
 	if (!isValidNickname(nickname)) {
-		client->sendMessage(IRCResponse::error(this->server->getServerIp(), 432, client->getNickname(), "Erroneus nickname"));
+		client->sendMessage(ERR_ERRONEUSNICKNAME(this->server->getServerIp(), client->getNickname()));
 		return ;
 	}
 	clients = this->server->getClients();
 	for (std::map<int, Client *>::iterator it = clients.begin(); it != clients.end(); ++it) {
 		if (it->second->getNickname() == nickname) {
-			client->sendMessage(IRCResponse::error(this->server->getServerIp(), 433, client->getNickname(), "Nickname is already in use"));
+			client->sendMessage(ERR_NICKNAMEINUSE(this->server->getServerIp(), client->getNickname()));
 			return ;
 		}
 	}
 	channel = this->server->getChannels();
 	for (std::map<std::string, Channel *>::iterator it = channel.begin(); it != channel.end(); ++it) {
 		if (it->second->isClientInChannel(client))
-			it->second->broadcastMessage(client, ":" + client->getNickname() + "!" + client->getUsername() + "@" + client->getHostname() + " NICK :" + nickname + "\r\n");
+			it->second->broadcastMessage(client, RPL_CHANGENICK(nickname, nickname, client->getUsername(), client->getHostname()));
 	}
-	client->sendMessage(":" + client->getNickname() + "!" + client->getUsername() + "@" + client->getHostname() + " NICK :" + nickname + "\r\n");
+	client->sendMessage(RPL_CHANGENICK(nickname, nickname, client->getUsername(), client->getHostname()));
 	client->setNickname(nickname);
 }

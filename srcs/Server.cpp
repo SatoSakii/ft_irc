@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 17:13:18 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/01 19:52:20 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/02 02:24:22 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,6 +131,8 @@ std::map<std::string, Channel *>	Server::getChannels(void) const { return this->
 
 std::string	Server::getServerIp(void) const { return this->serverIp; }
 
+std::string Server::getPassword(void) const { return this->serverPassword; }
+
 void	Server::disconnectClient(Client *client) {
 	int	clientFd;
 
@@ -186,6 +188,39 @@ void	Server::acceptNewClient(void) {
     std::cout << "New client connected" << std::endl;
 }
 
+bool	Server::CheckAuthProtocol(Client *client, IRCCommand ircCommand) {
+	if (client->getAuthLevel() == 0)
+	{
+		if (ircCommand.command == "PASS")
+			return this->commandHandler->passCommand(client, ircCommand);
+		else {
+			client->sendMessage(ERR_NOTREGISTERED(this->serverIp, "*"));
+			return false;
+		}
+	}
+	else if (client->getAuthLevel() == 1)
+	{
+		if (ircCommand.command == "NICK") {
+			this->commandHandler->nickCommand(client, ircCommand);
+			return true;
+		} else {
+			client->sendMessage(ERR_NOTREGISTERED(this->serverIp, "*"));
+			return false;
+		}
+	}
+	else if (client->getAuthLevel() == 2)
+	{
+		if (ircCommand.command == "USER") {
+			this->commandHandler->userCommand(client, ircCommand);
+			client->setAuth(true);
+			return true;
+		} else {
+			client->sendMessage(ERR_NOTREGISTERED(this->serverIp, client->getNickname()));
+			return false;
+		}
+	}
+	return false;
+}
 
 void	Server::processClientMessage(Client *client, const std::string &message) {
 	IRCCommand	ircCommand;
@@ -196,15 +231,14 @@ void	Server::processClientMessage(Client *client, const std::string &message) {
 		std::cout << "Param: " << *it << std::endl;
 	if (!client->isAuth())
 	{
-		if (client->getAuthPhase() == 0 && ircCommand.command == "PASS")
-			client->setAuthPhase(0, ircCommand, this->serverPassword);
-		else if (client->getAuthPhase() == 1 && ircCommand.command == "NICK")
-			client->setAuthPhase(1, ircCommand);
-		else if (client->getAuthPhase() == 2 && ircCommand.command == "USER")
-			client->setAuthPhase(2, ircCommand);
+		if (Server::CheckAuthProtocol(client, ircCommand))
+			if (client)
+				client->setAuthLevel(client->getAuthLevel() + 1);
 		return ;
 	}
-	if (ircCommand.command == "NICK")
+	if (ircCommand.command == "PASS" || ircCommand.command == "USER")
+		client->sendMessage(ERR_ALREADYREGISTERED(this->serverIp, client->getNickname()));
+	else if (ircCommand.command == "NICK")
 		this->commandHandler->nickCommand(client, ircCommand);
 }
 
@@ -236,6 +270,7 @@ void	Server::handleClientMessage(Client *client) {
         if (!message.empty())
         	Server::processClientMessage(client, message);
     }
+	std::cout << std::hex << client << std::endl;
     client->clearBuffer();
     if (!tmpBuffer.empty())
         client->appendToBuffer(tmpBuffer);

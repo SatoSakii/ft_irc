@@ -6,7 +6,7 @@
 #    By: albernar <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/16 17:32:26 by albernar          #+#    #+#              #
-#    Updated: 2025/04/01 18:14:24 by albernar         ###   ########.fr        #
+#    Updated: 2025/04/02 01:48:23 by albernar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,6 +28,7 @@ SRCS		:=	Channel.cpp \
 				IRCUtils.cpp \
 				main.cpp \
 				Server.cpp \
+				commands/Authentication.cpp \
 				commands/Nick.cpp
 
 SRCS		:=	$(addprefix $(SRC_DIR)/, $(SRCS))
