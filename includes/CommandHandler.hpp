@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 17:00:08 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/02 16:49:02 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/02 18:47:54 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ public:
 	void	nickCommand(Client *client, IRCCommand ircCommand);
 	void	userCommand(Client *client, IRCCommand ircCommand);
 	void	passCommand(Client *&client, IRCCommand ircCommand);
+	void	quitCommand(Client *&client, IRCCommand ircCommand);
 };
 
 # define ERR_MESSAGE(message) ("ERROR :" + message + "\r\n")
@@ -39,5 +40,6 @@ public:
 # define ERR_ALREADYREGISTERED(serverIp, nickname) (IRCResponse::error((serverIp), 462, (nickname), "You may not reregister"))
 # define ERR_NOTREGISTERED(serverIp, nickname) (IRCResponse::error((serverIp), 451, (nickname), "You have not registered"))
 
+# define RPL_QUIT(nickname, username, clientHost, reason) (":" + (nickname) + "!" + (username) + "@" + (clientHost) + " QUIT :" + (reason) + "\r\n")
 # define RPL_CHANGENICK(oldnick, nickname, username, clientHost) (":" + (oldnick) + "!" + (username) + "@" + (clientHost) + " NICK " + (nickname) + "\r\n")
 #endif

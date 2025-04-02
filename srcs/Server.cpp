@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 17:13:18 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/02 17:19:45 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/02 18:47:34 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -249,6 +249,8 @@ void	Server::processClientMessage(Client *&client, const std::string &message) {
 		client->sendMessage(ERR_ALREADYREGISTERED(this->serverIp, client->getNickname()));
 	else if (ircCommand.command == "NICK")
 		this->commandHandler->nickCommand(client, ircCommand);
+	else if (ircCommand.command == "QUIT")
+		this->commandHandler->quitCommand(client, ircCommand);
 }
 
 void	Server::handleClientMessage(Client *client) {
