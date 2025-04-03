@@ -6,15 +6,13 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 17:13:18 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/02 18:47:34 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/04 01:05:16 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 
 Server	*Server::instance = NULL;
-
-Server *Server::getInstance(void) { return instance; };
 
 void	Server::signalHandler(int signum) {
 	if (signum == SIGINT || signum == SIGQUIT) {
@@ -44,13 +42,10 @@ Server::~Server(void) {
 void	Server::serverInit(void) {
 	struct hostent		*host;
 	struct sockaddr_in	serverAddr;
-	struct sockaddr_in	tmp;
-	socklen_t			tmpLen;
     int					optval;
 	char				hostname[256];
 
 	optval = 1;
-	tmpLen = sizeof(tmp);
     serverSocket = socket(AF_INET, SOCK_STREAM, 0);
     if (serverSocket < 0)
         throw std::runtime_error("Error creating socket");
@@ -84,15 +79,15 @@ void	Server::runServer(void) {
     struct epoll_event	serverEvent;
 	int					eventCount;
 
-    epollInstance = epoll_create1(0);
-    if (epollInstance < 0)
+    this->epollInstance = epoll_create1(0);
+    if (this->epollInstance < 0)
 		throw std::runtime_error("Error creating epoll instance");
     serverEvent.events = EPOLLIN;
     serverEvent.data.fd = serverSocket;
-    if (epoll_ctl(epollInstance, EPOLL_CTL_ADD, serverSocket, &serverEvent) < 0)
+    if (epoll_ctl(this->epollInstance, EPOLL_CTL_ADD, serverSocket, &serverEvent) < 0)
         throw std::runtime_error("Error adding server socket to epoll");
     while (isRunning) {
-        eventCount = epoll_wait(epollInstance, events, 1024, -1);
+        eventCount = epoll_wait(this->epollInstance, events, 1024, -1);
         if (eventCount < 0)
 		{
 			if (errno == EINTR)
@@ -132,6 +127,19 @@ std::map<std::string, Channel *>	Server::getChannels(void) const { return this->
 std::string	Server::getServerIp(void) const { return this->serverIp; }
 
 std::string Server::getPassword(void) const { return this->serverPassword; }
+
+Channel	*Server::getChannel(std::string channelName) const {
+	std::map<std::string, Channel *>::const_iterator it = this->channels.find(channelName);
+	if (it != this->channels.end())
+		return it->second;
+	return NULL;
+}
+
+Channel	*Server::createChannel(std::string channelName) {
+	Channel	*channel = new Channel(channelName);
+	this->channels[channelName] = channel;
+	return channel;
+}
 
 void	Server::disconnectClient(Client *client) {
 	int	clientFd;
@@ -251,6 +259,8 @@ void	Server::processClientMessage(Client *&client, const std::string &message) {
 		this->commandHandler->nickCommand(client, ircCommand);
 	else if (ircCommand.command == "QUIT")
 		this->commandHandler->quitCommand(client, ircCommand);
+	else if (ircCommand.command == "JOIN")
+		this->commandHandler->joinCommand(client, ircCommand);
 }
 
 void	Server::handleClientMessage(Client *client) {

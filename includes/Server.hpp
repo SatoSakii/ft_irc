@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 17:08:50 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/02 16:45:54 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/04 01:05:23 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@ private:
 
 	CommandHandler					*commandHandler;
 
-	static Server					*getInstance(void);
 	static void						signalHandler(int signal);
 	bool							CheckAuthProtocol(Client *&client, IRCCommand ircCommand);
 
@@ -65,8 +64,11 @@ public:
 
 	std::map<int, Client*>			getClients(void) const;
 	std::map<std::string, Channel*>	getChannels(void) const;
+	Channel							*getChannel(std::string channelName) const;
 	std::string						getServerIp(void) const;
 	std::string						getPassword(void) const;
+
+	Channel							*createChannel(std::string channelName);
 };
 
 #endif
