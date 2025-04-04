@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 00:09:42 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/04 01:27:15 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/04 02:13:34 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,10 @@ void	CommandHandler::joinCommand(Client *client, IRCCommand ircCommand) {
 			continue ;
 		}
 		channel = this->server->getChannel(channelName);
-		if (!channel)
-			channel = this->server->createChannel(channelName);
-		if (channel->isClientInChannel(client))
+		if (channel && channel->isClientInChannel(client))
 			continue ;
+		if (!channel)
+			channel = this->server->createChannel(channelName, client);
 		if (channel->isInviteOnly() && !channel->isInvited(client)) {
 			client->sendMessage(ERR_INVITEONLYCHAN(this->server->getServerIp(), channelName, client->getNickname()));
 			continue ;

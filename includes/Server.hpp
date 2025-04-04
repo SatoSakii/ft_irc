@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 17:08:50 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/04 01:05:23 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/04 02:13:14 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ public:
 	std::string						getServerIp(void) const;
 	std::string						getPassword(void) const;
 
-	Channel							*createChannel(std::string channelName);
+	Channel							*createChannel(std::string channelName, Client *client);
 };
 
 #endif

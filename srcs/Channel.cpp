@@ -6,20 +6,30 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 18:05:56 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/04 01:27:14 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/04 02:21:31 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Channel.hpp"
 
-Channel::Channel(std::string name) : name(name) {}
+Channel::Channel(std::string name) : name(name) {
+	this->clientOperator = NULL;
+	this->maxClients = 2147483647;
+	this->inviteOnly = false;
+	this->password = "";
+	this->topic = "";
+}
 
 void	Channel::addClient(Client *client) {
 	this->clients[client->getFd()] = client;
 }
 
 void	Channel::removeClient(int fd) {
+	if (this->clientOperator->getFd() == fd)
+		this->clientOperator = NULL;
 	this->clients.erase(fd);
+	if (this->getClients().size() == 0)
+		delete this;
 }
 
 bool	Channel::isClientInChannel(Client *client) const {
@@ -27,8 +37,7 @@ bool	Channel::isClientInChannel(Client *client) const {
 }
 
 bool	Channel::isInviteOnly(void) const {
-	// please sacha implement this
-	return false;
+	return this->inviteOnly;
 }
 
 bool	Channel::isInvited(Client *client) const {
@@ -38,23 +47,27 @@ bool	Channel::isInvited(Client *client) const {
 }
 
 bool	Channel::isPasswordProtected(void) const {
-	// please sacha implement this
-	return false;
+	return !this->password.empty();
 }
 
 std::string	Channel::getPassword(void) const {
-	// please sacha implement this
-	return "";
+	return this->password;
 }
 
 bool	Channel::isFull(void) const {
-	// please sacha implement this
-	return false;
+	return ((int)this->clients.size() >= this->maxClients);
 }
 
 std::string	Channel::getTopic(void) const {
-	// please sacha implement this
-	return "";
+	return this->topic;
+}
+
+bool	Channel::isOperator(Client *client) const {
+	return (this->clientOperator == client);
+}
+
+void	Channel::setClientOperator(Client *client) {
+	this->clientOperator = client;
 }
 
 std::map<int, Client *> Channel::getClients(void) const { return this->clients; }
@@ -67,8 +80,8 @@ std::string Channel::getUserList(void) const {
 	for (std::map<int, Client *>::const_iterator it = channelClients.begin(); it != channelClients.end(); ++it) {
 		if (!userList.empty())
 			userList += " ";
-		// if (this->isOperator(it->second))
-		// 	userList += "@";
+		if (this->isOperator(it->second))
+			userList += "@";
 		userList += it->second->getNickname();
 	}
 	return userList;
