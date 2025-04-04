@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 17:08:50 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/04 03:17:18 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/04 20:25:37 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 # include <sys/epoll.h>
 # include <cstring>
 # include <cerrno>
+# include <algorithm>
 
 # include "Client.hpp"
 # include "Channel.hpp"

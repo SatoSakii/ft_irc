@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 17:13:18 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/04 19:07:26 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/04 20:37:37 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,9 +129,17 @@ std::string	Server::getServerIp(void) const { return this->serverIp; }
 std::string Server::getPassword(void) const { return this->serverPassword; }
 
 Channel	*Server::getChannel(std::string channelName) const {
-	std::map<std::string, Channel *>::const_iterator it = this->channels.find(channelName);
-	if (it != this->channels.end())
-		return it->second;
+	std::string finalName;
+	std::string	key;
+
+	finalName = channelName;
+	std::transform(finalName.begin(), finalName.end(), finalName.begin(), ::tolower);
+	for (std::map<std::string, Channel *>::const_iterator it = this->channels.begin(); it != this->channels.end(); ++it) {
+		key = it->first;
+		std::transform(key.begin(), key.end(), key.begin(), ::tolower);
+		if (key == finalName)
+			return it->second;
+	}
 	return NULL;
 }
 
@@ -155,6 +163,7 @@ void	Server::removeChannel(std::string channelName) {
 
 Channel	*Server::createChannel(std::string channelName, Client *client) {
 	Channel	*channel = new Channel(channelName);
+
 	this->channels[channelName] = channel;
 	channel->addClient(client);
 	channel->setClientOperator(client);
@@ -289,6 +298,8 @@ void	Server::processClientMessage(Client *&client, const std::string &message) {
 		this->commandHandler->inviteCommand(client, ircCommand);
 	else if (ircCommand.command == "KICK")
 		this->commandHandler->kickCommand(client, ircCommand);
+	else if (ircCommand.command == "PRIVMSG")
+		this->commandHandler->privmsgCommand(client, ircCommand);
 }
 
 void	Server::handleClientMessage(Client *client) {

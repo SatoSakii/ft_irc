@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 00:09:42 by sabartho          #+#    #+#             */
-/*   Updated: 2025/04/04 19:11:23 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/04 20:07:18 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 // Parameters: <channel> <user> *( "," <user> ) [<comment>]
 
 
-void	CommandHandler::kickCommand(Client *&client, IRCCommand ircCommand)
+void	CommandHandler::kickCommand(Client *client, IRCCommand ircCommand)
 {
     std::string                 channelName;
     std::string                 reason = "no reason";

@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 17:00:08 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/04 19:09:50 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/04 20:15:22 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,12 @@ public:
 	void	joinCommand(Client *client, IRCCommand ircCommand);
 	void	partCommand(Client *client, IRCCommand ircCommand);
 	void	topicCommand(Client *client, IRCCommand ircCommand);
+	void	privmsgCommand(Client *client, IRCCommand ircCommand);
 	void	passCommand(Client *&client, IRCCommand ircCommand);
 	void	quitCommand(Client *&client, IRCCommand ircCommand);
-	void	inviteCommand(Client *&client, IRCCommand ircCommand);
-	void	modeCommand(Client *&client, IRCCommand ircCommand);
-	void	kickCommand(Client *&client, IRCCommand ircCommand);
+	void	inviteCommand(Client *client, IRCCommand ircCommand);
+	void	modeCommand(Client *client, IRCCommand ircCommand);
+	void	kickCommand(Client *client, IRCCommand ircCommand);
 };
 
 # define ERR_MESSAGE(message) ("ERROR :" + message + "\r\n")
@@ -54,7 +55,10 @@ public:
 # define ERR_CHANNELISFULL(serverIp, channelName, nickname) (IRCResponse::error((serverIp), 471, (nickname) + " " + (channelName), "Cannot join channel (+l)"))
 # define ERR_NOTONCHANNEL(serverIp, channelName, nickname) (IRCResponse::error((serverIp), 442, (nickname) + " " + (channelName), "You're not on that channel"))
 # define ERR_CHANOPRIVSNEEDED(serverIp, channelName, nickname) (IRCResponse::error((serverIp), 482, (nickname) + " " + (channelName), "You're not channel operator"))
+# define ERR_CANNOTSENDTOCHAN(serverIp, channelName, nickname) (IRCResponse::error((serverIp), 404, (nickname) + " " + (channelName), "Cannot send to channel"))
+# define ERR_NORECIPIENT(serverIp, command, nickname) (IRCResponse::error((serverIp), 411, (nickname) + " " + (command), "No recipient given (" + (command) + ")"))
 
+# define RPL_PRIVMSG(nickname, username, clientHost, target, message) (":" + (nickname) + "!" + (username) + "@" + (clientHost) + " PRIVMSG " + (target) + " :" + (message) + "\r\n")
 # define RPL_PART(nickname, username, clientHost, channelName) (":" + (nickname) + "!" + (username) + "@" + (clientHost) + " PART :" + (channelName) + "\r\n")
 # define RPL_JOIN(nickname, username, clientHost, channelName) (":" + (nickname) + "!" + (username) + "@" + (clientHost) + " JOIN :" + (channelName) + "\r\n")
 # define RPL_NOTOPIC(server, nickname, channel) (":" + (server) + " 331 " + (nickname) + " " + (channel) + " :No topic is set\r\n")

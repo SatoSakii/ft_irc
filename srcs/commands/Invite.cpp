@@ -6,13 +6,13 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 00:09:42 by sabartho          #+#    #+#             */
-/*   Updated: 2025/04/04 05:20:26 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/04 20:15:42 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "CommandHandler.hpp"
 
-void	CommandHandler::inviteCommand(Client *&client, IRCCommand ircCommand) {
+void	CommandHandler::inviteCommand(Client *client, IRCCommand ircCommand) {
     Client                  *invitedClient;
     std::string             channelName;
     Channel                 *channel;

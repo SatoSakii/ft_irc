@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 18:05:56 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/04 19:21:08 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/04 20:31:06 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,10 @@ bool	Channel::isOperator(Client *client) const {
 			return true;
 	}
 	return false;
+}
+
+std::string Channel::getName(void) const {
+	return this->name;
 }
 
 void	Channel::setClientOperator(Client *client) {

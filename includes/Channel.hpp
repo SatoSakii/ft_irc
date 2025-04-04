@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 17:20:33 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/04 19:21:10 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/04 20:30:52 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ public:
 	std::string	getTopic(void) const;
 	void		setTopicSet(bool topicSet);
 	bool		getTopicSet(void) const;
+	std::string	getName(void) const;
 	std::string	getPassword(void) const;
 	std::string getUserList(void) const;
 	std::map<int, Client *> getClients(void) const;
