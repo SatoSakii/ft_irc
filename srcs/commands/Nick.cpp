@@ -6,23 +6,15 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 17:03:18 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/04 21:09:27 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/04 19:05:08 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "CommandHandler.hpp"
 
 bool	isValidNickname(const std::string &nickname) {
-	const	std::string	invalidChars = "@!{}[]\\~#+%-&:,?^$|";
-
 	if (nickname.empty() || nickname.length() > 9)
 		return (false);
-	if (std::isdigit(nickname[0]))
-		return (false);
-	for (size_t i = 0; i < nickname.length(); ++i) {
-		if (invalidChars.find(nickname[i]) != std::string::npos)
-			return (false);
-	}
 	return (true);
 }
 
