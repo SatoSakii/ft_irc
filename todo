@@ -8,5 +8,6 @@ TODOUCE:
 	TOPIC Command [GOOD] add +t -t
 	INVITE Command [GOOD] fix
 	KICK Command [GOOD] fix
+	PRIVMSG Command [GOOD]
 	CAP LS 302 AT FIRST, HEXCHAT IS SHIT (skipped in pass, good i think)
 	please find bug sachounet
