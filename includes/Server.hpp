@@ -66,6 +66,7 @@ public:
 	std::map<std::string, Channel*>	getChannels(void) const;
 	void							removeChannel(std::string channelName);
 	Channel							*getChannel(std::string channelName) const;
+	Client							*getClientByName(std::string name) const;
 	std::string						getServerIp(void) const;
 	std::string						getPassword(void) const;
 

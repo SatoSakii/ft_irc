@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "Channel.hpp"
+#include <algorithm>
 
 Channel::Channel(std::string name) : name(name) {
 	this->clientOperator = NULL;
@@ -39,8 +40,10 @@ bool	Channel::isInviteOnly(void) const {
 }
 
 bool	Channel::isInvited(Client *client) const {
-	(void)client;
-	// please sacha implement this
+
+    std::vector<Client *>::const_iterator it = std::find(this->invitedClients.begin(), this->invitedClients.end(), client);
+    if (it != this->invitedClients.end())
+       return true;
 	return false;
 }
 
@@ -87,6 +90,22 @@ std::string Channel::getUserList(void) const {
 		userList += it->second->getNickname();
 	}
 	return userList;
+}
+
+std::vector<Client *> Channel::getInvitedClients(void) const
+{
+	return this->invitedClients;
+}
+
+void Channel::addInvitedClient(Client *client)
+{
+	this->invitedClients[client->getFd()] = client;
+}
+
+void Channel::removeInvitation(Client *client)
+{
+	if (this->isInvited(client))
+		this->clients.erase(client->getFd());
 }
 
 void	Channel::broadcastMessage(Client *client, std::string message) const {

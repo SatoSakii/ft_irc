@@ -135,6 +135,15 @@ Channel	*Server::getChannel(std::string channelName) const {
 	return NULL;
 }
 
+Client *Server::getClientByName(std::string name) const
+{
+	for (std::map<int, Client *>::const_iterator it = this->clients.begin(); it != clients.end(); ++it) {
+        if (it->second->getNickname() == name)
+            return it->second;
+    }
+	return NULL;
+}
+
 void	Server::removeChannel(std::string channelName) {
 	std::map<std::string, Channel *>::iterator it = this->channels.find(channelName);
 

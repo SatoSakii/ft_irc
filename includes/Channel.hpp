@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: sabartho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 17:20:33 by albernar          #+#    #+#             */
 /*   Updated: 2025/04/04 03:34:34 by albernar         ###   ########.fr       */
@@ -21,6 +21,7 @@ class Channel
 private:
 	std::string				name;
 	std::map<int, Client*>	clients;
+	std::vector<Client *>	invitedClients;
 	Client					*clientOperator;
 	int						maxClients; // +l <limit> | -l
 	bool					inviteOnly; // +i | -i
@@ -30,6 +31,8 @@ public:
 	Channel(std::string name);
 
 	void		addClient(Client *client);
+	void		addInvitedClient(Client *client);
+	void		removeInvitation(Client *client);
 	void		removeClient(int fd);
 	bool		isClientInChannel(Client *client) const;
 	bool		isInviteOnly(void) const;
@@ -43,6 +46,8 @@ public:
 	std::string	getTopic(void) const;
 	std::string getUserList(void) const;
 	std::map<int, Client *> getClients(void) const;
+	std::vector<Client *> getInvitedClients(void) const;
+
 	
 
 	void	broadcastMessage(Client *client, std::string message) const;
