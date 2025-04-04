@@ -1,0 +1,12 @@
+TODOUCE:
+	NICK Command	[FINISH]
+	USER Command	[FINISH]
+	PASS Command	[FINISH]
+	QUIT Command	[FINISH]
+	JOIN Command	[FINISH]
+	PART Command	[FINISH]
+	TOPIC Command	[GOOD] add +t -t
+	MODE Command	[IN PROGRESS]
+	INVITE Command	[FINISH]
+	KICK Command	[FINISH]
+	PRIVMSG Command [FINISH]
