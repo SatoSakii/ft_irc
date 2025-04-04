@@ -14,7 +14,6 @@
 #include <algorithm>
 
 Channel::Channel(std::string name) : name(name) {
-	this->clientOperator = NULL;
 	this->maxClients = 2147483647;
 	this->inviteOnly = false;
 	this->password = "";
@@ -25,10 +24,17 @@ void	Channel::addClient(Client *client) {
 	this->clients[client->getFd()] = client;
 }
 
-void	Channel::removeClient(int fd) {
-	if (this->clientOperator && this->clientOperator->getFd() == fd)
-		this->clientOperator = NULL;
-	this->clients.erase(fd);
+void	Channel::removeOperator(Client *client) {
+	std::vector<Client *>::iterator it = std::find(this->clientsOperator.begin(), this->clientsOperator.end(), client);
+	if (it != this->clientsOperator.end())
+		this->clientsOperator.erase(it);
+
+}
+
+void	Channel::removeClient(Client *client) {
+	if (this->isOperator(client))
+		removeOperator(client);
+	this->clients.erase(client->getFd());
 }
 
 bool	Channel::isClientInChannel(Client *client) const {
@@ -40,7 +46,6 @@ bool	Channel::isInviteOnly(void) const {
 }
 
 bool	Channel::isInvited(Client *client) const {
-
     std::vector<Client *>::const_iterator it = std::find(this->invitedClients.begin(), this->invitedClients.end(), client);
     if (it != this->invitedClients.end())
        return true;
@@ -68,11 +73,15 @@ void	Channel::setTopic(std::string topic) {
 }
 
 bool	Channel::isOperator(Client *client) const {
-	return (this->clientOperator == client);
+	for (size_t i = 0; i < this->clientsOperator.size(); i++) {
+		if (this->clientsOperator[i] == client)
+			return true;
+	}
+	return false;
 }
 
 void	Channel::setClientOperator(Client *client) {
-	this->clientOperator = client;
+	this->clientsOperator.push_back(client);
 }
 
 std::map<int, Client *> Channel::getClients(void) const { return this->clients; }
@@ -92,20 +101,20 @@ std::string Channel::getUserList(void) const {
 	return userList;
 }
 
-std::vector<Client *> Channel::getInvitedClients(void) const
-{
+std::vector<Client *> Channel::getInvitedClients(void) const {
 	return this->invitedClients;
 }
 
-void Channel::addInvitedClient(Client *client)
-{
+void Channel::addInvitedClient(Client *client) {
 	this->invitedClients.push_back(client);
 }
 
-void Channel::removeInvitation(Client *client)
-{
-	if (this->isInvited(client))
-		this->clients.erase(client->getFd());
+void Channel::removeInvitation(Client *client) {
+	if (this->isInvited(client)) {
+		std::vector<Client *>::iterator it = std::find(this->invitedClients.begin(), this->invitedClients.end(), client);
+		if (it != this->invitedClients.end())
+			this->invitedClients.erase(it);
+	}
 }
 
 void	Channel::broadcastMessage(Client *client, std::string message) const {

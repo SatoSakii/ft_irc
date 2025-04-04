@@ -21,8 +21,10 @@ void	CommandHandler::quitCommand(Client *&client, IRCCommand ircCommand) {
 		quitMessage += ircCommand.params[0];
 	channel = this->server->getChannels();
 	for (std::map<std::string, Channel *>::iterator it = channel.begin(); it != channel.end(); ++it) {
-		if (it->second->isClientInChannel(client))
+		if (it->second->isClientInChannel(client)) {
 			it->second->broadcastMessage(client, RPL_QUIT(client->getNickname(), client->getUsername(), client->getHostname(), quitMessage));
+			it->second->removeClient(client);
+		}
 	}
 	client->sendMessage(RPL_QUIT(client->getNickname(), client->getUsername(), client->getHostname(), quitMessage));
 	this->server->disconnectClient(client);

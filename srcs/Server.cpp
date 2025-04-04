@@ -287,6 +287,8 @@ void	Server::processClientMessage(Client *&client, const std::string &message) {
 		this->commandHandler->topicCommand(client, ircCommand);
 	else if (ircCommand.command == "INVITE")
 		this->commandHandler->inviteCommand(client, ircCommand);
+	else if (ircCommand.command == "KICK")
+		this->commandHandler->inviteCommand(client, ircCommand);
 }
 
 void	Server::handleClientMessage(Client *client) {

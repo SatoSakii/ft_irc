@@ -46,6 +46,7 @@ public:
 # define ERR_ALREADYREGISTERED(serverIp, nickname) (IRCResponse::error((serverIp), 462, (nickname), "You may not reregister"))
 # define ERR_NOTREGISTERED(serverIp, nickname) (IRCResponse::error((serverIp), 451, (nickname), "You have not registered"))
 # define ERR_NOSUCHCHANNEL(serverIp, channelName, nickname) (IRCResponse::error((serverIp), 403, (nickname) + " " + (channelName), "No such channel"))
+# define ERR_USERNOTINCHANNEL(serverIp, channelName, nickname, target) (IRCResponse::error((serverIp), 441, (nickname) + " " + (target) + " " + (channelName), "They aren't on that channel"))
 # define ERR_NOSUCHNICK(serverIp, channelName, nickname) (IRCResponse::error((serverIp), 401, (nickname) + " " + (channelName), "No such nick/channel"))
 # define ERR_USERONCHANNEL(serverIp, channelName, nickname, target) (IRCResponse::error((serverIp), 443, (nickname) + " " + (target) + " " + (channelName), "is already on channel"))
 # define ERR_INVITEONLYCHAN(serverIp, channelName, nickname) (IRCResponse::error((serverIp), 473, (nickname) + " " + (channelName), "Cannot join channel (+i)"))
@@ -64,5 +65,6 @@ public:
 # define RPL_CHANGENICK(oldnick, nickname, username, clientHost) (":" + (oldnick) + "!" + (username) + "@" + (clientHost) + " NICK " + (nickname) + "\r\n")
 # define RPL_INVITING(serverIp, nickname, target, channelName) (":" + (serverIp) + " 341 " + (nickname) + " " + (target) + " " + (channelName) + "\r\n")
 # define RPL_INVITED(nickname, username, clientHost, target, channelName) (":" + (nickname) + "!" + (username) + "@" + (clientHost) + " INVITE " + (target) + " :" + (channelName) + "\r\n")
+# define RPL_KICK(nickname, username, clientHost, target, channelName, reason) (":" + (nickname) + "!" + (username) + "@" + (clientHost) + " KICK " + (channelName) + (target) + " :" + (reason) + "\r\n")
 
 #endif

@@ -37,7 +37,7 @@ void	CommandHandler::partCommand(Client *client, IRCCommand ircCommand) {
 		partMessage = (ircCommand.params.size() > 1) ? ircCommand.params[1] : "Leaving";
 		client->sendMessage(RPL_PART(client->getNickname(), client->getUsername(), client->getHostname(), channelName + " :" + partMessage));
 		channel->broadcastMessage(client, RPL_PART(client->getNickname(), client->getUsername(), client->getHostname(), channelName + " :" + partMessage));
-		channel->removeClient(client->getFd());
+		channel->removeClient(client);
 		channel->removeInvitation(client);
 		if (channel->getClients().empty())
 			this->server->removeChannel(channelName);

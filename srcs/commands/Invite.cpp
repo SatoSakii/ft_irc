@@ -41,6 +41,6 @@ void	CommandHandler::inviteCommand(Client *&client, IRCCommand ircCommand) {
         return ;
     }
     client->sendMessage(RPL_INVITING(this->server->getServerIp(), client->getNickname(), invitedClient->getNickname(), channelName));
-	invitedClient->sendMessage(RPL_INVITED(client->getNickname(), client->getUsername(), invitedClient->getHostname(), invitedClient->getNickname(), channelName));
+	invitedClient->sendMessage(RPL_INVITED(client->getNickname(), client->getUsername(), client->getHostname(), invitedClient->getNickname(), channelName));
     channel->addInvitedClient(invitedClient);
 }

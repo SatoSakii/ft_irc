@@ -22,7 +22,7 @@ private:
 	std::string				name;
 	std::map<int, Client*>	clients;
 	std::vector<Client *>	invitedClients;
-	Client					*clientOperator;
+	std::vector<Client *>	clientsOperator;
 	int						maxClients; // +l <limit> | -l
 	bool					inviteOnly; // +i | -i
 	std::string				password; // +k <password> | -k = ""
@@ -33,7 +33,8 @@ public:
 	void		addClient(Client *client);
 	void		addInvitedClient(Client *client);
 	void		removeInvitation(Client *client);
-	void		removeClient(int fd);
+	void		removeClient(Client *client);
+	void		removeOperator(Client *client);
 	bool		isClientInChannel(Client *client) const;
 	bool		isInviteOnly(void) const;
 	bool		isInvited(Client *client) const;
