@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 17:00:08 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/04 03:57:24 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/04 05:19:41 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,6 @@ public:
 # define ERR_NOSUCHCHANNEL(serverIp, channelName, nickname) (IRCResponse::error((serverIp), 403, (nickname) + " " + (channelName), "No such channel"))
 # define ERR_NOSUCHNICK(serverIp, channelName, nickname) (IRCResponse::error((serverIp), 401, (nickname) + " " + (channelName), "No such nick/channel"))
 # define ERR_USERONCHANNEL(serverIp, channelName, nickname, target) (IRCResponse::error((serverIp), 443, (nickname) + " " + (target) + " " + (channelName), "is already on channel"))
-# define ERR_CHANOPRIVSNEEDED(serverIp, channelName, nickname) (IRCResponse::error((serverIp), 482, (nickname) + " " + (channelName), "You're not channel operator"))
 # define ERR_INVITEONLYCHAN(serverIp, channelName, nickname) (IRCResponse::error((serverIp), 473, (nickname) + " " + (channelName), "Cannot join channel (+i)"))
 # define ERR_BADCHANNELKEY(serverIp, channelName, nickname) (IRCResponse::error((serverIp), 475, (nickname) + " " + (channelName), "Cannot join channel (+k)"))
 # define ERR_CHANNELISFULL(serverIp, channelName, nickname) (IRCResponse::error((serverIp), 471, (nickname) + " " + (channelName), "Cannot join channel (+l)"))
@@ -64,4 +63,6 @@ public:
 # define RPL_QUIT(nickname, username, clientHost, reason) (":" + (nickname) + "!" + (username) + "@" + (clientHost) + " QUIT :" + (reason) + "\r\n")
 # define RPL_CHANGENICK(oldnick, nickname, username, clientHost) (":" + (oldnick) + "!" + (username) + "@" + (clientHost) + " NICK " + (nickname) + "\r\n")
 # define RPL_INVITING(serverIp, nickname, target, channelName) (":" + (serverIp) + " 341 " + (nickname) + " " + (target) + " " + (channelName) + "\r\n")
+# define RPL_INVITED(nickname, username, clientHost, target, channelName) (":" + (nickname) + "!" + (username) + "@" + (clientHost) + " INVITE " + (target) + " :" + (channelName) + "\r\n")
+
 #endif

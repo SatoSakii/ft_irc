@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 18:05:56 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/04 03:34:50 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/04 05:12:16 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,7 @@ std::vector<Client *> Channel::getInvitedClients(void) const
 
 void Channel::addInvitedClient(Client *client)
 {
-	this->invitedClients[client->getFd()] = client;
+	this->invitedClients.push_back(client);
 }
 
 void Channel::removeInvitation(Client *client)

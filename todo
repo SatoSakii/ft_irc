@@ -6,6 +6,6 @@ TODOUCE:
 	JOIN Command [GOOD]
 	PART Command [GOOD]
 	TOPIC Command [GOOD]
+	INVITE Command [GOOD]
 	CAP LS 302 AT FIRST, HEXCHAT IS SHIT (skipped in pass, good i think)
-	IN PROGRESS: JOIN, PART
-	PLEASE FIND BUG IN AUTH PROTOCOL, QUIT, NICK
+	please find bug sachounet
