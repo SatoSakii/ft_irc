@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 17:13:18 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/04 05:08:14 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/04 19:07:26 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -288,7 +288,7 @@ void	Server::processClientMessage(Client *&client, const std::string &message) {
 	else if (ircCommand.command == "INVITE")
 		this->commandHandler->inviteCommand(client, ircCommand);
 	else if (ircCommand.command == "KICK")
-		this->commandHandler->inviteCommand(client, ircCommand);
+		this->commandHandler->kickCommand(client, ircCommand);
 }
 
 void	Server::handleClientMessage(Client *client) {

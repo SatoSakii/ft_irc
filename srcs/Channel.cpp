@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 18:05:56 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/04 05:12:16 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/04 19:21:08 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ Channel::Channel(std::string name) : name(name) {
 	this->inviteOnly = false;
 	this->password = "";
 	this->topic = "";
+	this->topicSet = false;
 }
 
 void	Channel::addClient(Client *client) {
@@ -28,7 +29,14 @@ void	Channel::removeOperator(Client *client) {
 	std::vector<Client *>::iterator it = std::find(this->clientsOperator.begin(), this->clientsOperator.end(), client);
 	if (it != this->clientsOperator.end())
 		this->clientsOperator.erase(it);
+}
 
+void	Channel::setTopicSet(bool topicSet) {
+	this->topicSet = topicSet;
+}
+
+bool	Channel::getTopicSet(void) const {
+	return this->topicSet;
 }
 
 void	Channel::removeClient(Client *client) {

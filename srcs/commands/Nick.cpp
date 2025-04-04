@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 17:03:18 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/02 18:27:14 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/04 19:05:08 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,8 @@ void	CommandHandler::nickCommand(Client *client, IRCCommand ircCommand) {
 	channel = this->server->getChannels();
 	for (std::map<std::string, Channel *>::iterator it = channel.begin(); it != channel.end(); ++it) {
 		if (it->second->isClientInChannel(client))
-			it->second->broadcastMessage(client, RPL_CHANGENICK(oldnick, nickname, client->getUsername(), client->getHostname()));
+			it->second->broadcastMessage(client, RPL_CHANGENICK(nickname, nickname, client->getUsername(), client->getHostname()));
 	}
-	client->sendMessage(RPL_CHANGENICK(oldnick, nickname, client->getUsername(), client->getHostname()));
+	client->sendMessage(RPL_CHANGENICK(nickname, nickname, client->getUsername(), client->getHostname()));
 	client->setNickname(nickname);
 }

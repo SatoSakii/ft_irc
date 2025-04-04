@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 17:00:08 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/04 05:19:41 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/04 19:09:50 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,6 @@ public:
 # define RPL_CHANGENICK(oldnick, nickname, username, clientHost) (":" + (oldnick) + "!" + (username) + "@" + (clientHost) + " NICK " + (nickname) + "\r\n")
 # define RPL_INVITING(serverIp, nickname, target, channelName) (":" + (serverIp) + " 341 " + (nickname) + " " + (target) + " " + (channelName) + "\r\n")
 # define RPL_INVITED(nickname, username, clientHost, target, channelName) (":" + (nickname) + "!" + (username) + "@" + (clientHost) + " INVITE " + (target) + " :" + (channelName) + "\r\n")
-# define RPL_KICK(nickname, username, clientHost, target, channelName, reason) (":" + (nickname) + "!" + (username) + "@" + (clientHost) + " KICK " + (channelName) + (target) + " :" + (reason) + "\r\n")
+# define RPL_KICK(nickname, username, clientHost, target, channelName, reason) (":" + (nickname) + "!" + (username) + "@" + (clientHost) + " KICK " + (channelName) + " " +(target) + " :" + (reason) + "\r\n")
 
 #endif

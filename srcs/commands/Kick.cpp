@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Kick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sabartho <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 00:09:42 by sabartho          #+#    #+#             */
-/*   Updated: 2025/04/04 02:13:34 by sabartho         ###   ########.fr       */
+/*   Updated: 2025/04/04 19:11:23 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,5 +54,7 @@ void	CommandHandler::kickCommand(Client *&client, IRCCommand ircCommand)
         channel->broadcastMessage(currentClient, RPL_KICK(client->getNickname(), client->getUsername(), client->getHostname(), currentClient->getNickname(), channelName, reason));
         currentClient->sendMessage(RPL_KICK(client->getNickname(), client->getUsername(), client->getHostname(), currentClient->getNickname(), channelName, reason));
         channel->removeClient(currentClient);
+		if (channel->getClients().empty())
+			this->server->removeChannel(channelName);
     }
 }

@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 03:29:47 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/04 04:40:22 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/04 19:21:11 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	CommandHandler::topicCommand(Client *client, IRCCommand ircCommand) {
 			client->sendMessage(RPL_TOPIC(this->server->getServerIp(), client->getNickname(), channelName, channel->getTopic()));
 		return ;
 	}
-	if (!channel->isOperator(client)) {
+	if (channel->getTopicSet() && !channel->isOperator(client)) {
 		client->sendMessage(ERR_CHANOPRIVSNEEDED(this->server->getServerIp(), channelName, client->getNickname()));
 		return ;
 	}
