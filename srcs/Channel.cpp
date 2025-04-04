@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 18:05:56 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/04 20:31:06 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/04 19:21:08 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,10 @@ std::string	Channel::getPassword(void) const {
 	return this->password;
 }
 
+std::string	Channel::getName(void) const {
+	return this->name;
+}
+
 bool	Channel::isFull(void) const {
 	return ((int)this->clients.size() >= this->maxClients);
 }
@@ -80,16 +84,16 @@ void	Channel::setTopic(std::string topic) {
 	this->topic = topic;
 }
 
+void	Channel::setInviteOnly(bool value) {
+	this->inviteOnly = value;
+}
+
 bool	Channel::isOperator(Client *client) const {
 	for (size_t i = 0; i < this->clientsOperator.size(); i++) {
 		if (this->clientsOperator[i] == client)
 			return true;
 	}
 	return false;
-}
-
-std::string Channel::getName(void) const {
-	return this->name;
 }
 
 void	Channel::setClientOperator(Client *client) {

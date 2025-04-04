@@ -6,7 +6,7 @@
 #    By: albernar <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/16 17:32:26 by albernar          #+#    #+#              #
-#    Updated: 2025/04/04 20:15:59 by albernar         ###   ########.fr        #
+#    Updated: 2025/04/04 19:07:40 by albernar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,7 +36,7 @@ SRCS		:=	Channel.cpp \
 				commands/Part.cpp \
 				commands/Topic.cpp \
 				commands/Kick.cpp \
-				commands/Privmsg.cpp
+				commands/mode.cpp \
 
 SRCS		:=	$(addprefix $(SRC_DIR)/, $(SRCS))
 
