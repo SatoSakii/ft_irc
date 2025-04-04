@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 17:00:08 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/04 00:41:07 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/04 03:57:24 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ public:
 	void	nickCommand(Client *client, IRCCommand ircCommand);
 	void	userCommand(Client *client, IRCCommand ircCommand);
 	void	joinCommand(Client *client, IRCCommand ircCommand);
+	void	partCommand(Client *client, IRCCommand ircCommand);
+	void	topicCommand(Client *client, IRCCommand ircCommand);
 	void	passCommand(Client *&client, IRCCommand ircCommand);
 	void	quitCommand(Client *&client, IRCCommand ircCommand);
 	void	inviteCommand(Client *&client, IRCCommand ircCommand);
@@ -50,9 +52,13 @@ public:
 # define ERR_INVITEONLYCHAN(serverIp, channelName, nickname) (IRCResponse::error((serverIp), 473, (nickname) + " " + (channelName), "Cannot join channel (+i)"))
 # define ERR_BADCHANNELKEY(serverIp, channelName, nickname) (IRCResponse::error((serverIp), 475, (nickname) + " " + (channelName), "Cannot join channel (+k)"))
 # define ERR_CHANNELISFULL(serverIp, channelName, nickname) (IRCResponse::error((serverIp), 471, (nickname) + " " + (channelName), "Cannot join channel (+l)"))
+# define ERR_NOTONCHANNEL(serverIp, channelName, nickname) (IRCResponse::error((serverIp), 442, (nickname) + " " + (channelName), "You're not on that channel"))
+# define ERR_CHANOPRIVSNEEDED(serverIp, channelName, nickname) (IRCResponse::error((serverIp), 482, (nickname) + " " + (channelName), "You're not channel operator"))
 
-# define RPL_JOIN(nickname, channelName) (":" + (nickname) + " JOIN :" + (channelName) + "\r\n")
-# define RPL_TOPIC(serverIp, nickname, channelName, topic) (":" + (serverIp) + " 332 " + (nickname) + " " + (channelName) + " :" + (topic) + "\r\n")
+# define RPL_PART(nickname, username, clientHost, channelName) (":" + (nickname) + "!" + (username) + "@" + (clientHost) + " PART :" + (channelName) + "\r\n")
+# define RPL_JOIN(nickname, username, clientHost, channelName) (":" + (nickname) + "!" + (username) + "@" + (clientHost) + " JOIN :" + (channelName) + "\r\n")
+# define RPL_NOTOPIC(server, nickname, channel) (":" + (server) + " 331 " + (nickname) + " " + (channel) + " :No topic is set\r\n")
+# define RPL_TOPIC(server, nickname, channel, topic) (":" + (server) + " 332 " + (nickname) + " " + (channel) + " :" + (topic) + "\r\n")
 # define RPL_NAMREPLY(serverIp, nickname, channelName, userList) (":" + (serverIp) + " 353 " + (nickname) + " = " + (channelName) + " :" + (userList) + "\r\n")
 # define RPL_ENDOFNAMES(serverIp, nickname, channelName) (":" + (serverIp) + " 366 " + (nickname) + " " + (channelName) + " :End of /NAMES list\r\n")
 # define RPL_QUIT(nickname, username, clientHost, reason) (":" + (nickname) + "!" + (username) + "@" + (clientHost) + " QUIT :" + (reason) + "\r\n")

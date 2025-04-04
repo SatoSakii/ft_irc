@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 17:08:50 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/04 02:13:14 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/04 03:17:18 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ public:
 
 	std::map<int, Client*>			getClients(void) const;
 	std::map<std::string, Channel*>	getChannels(void) const;
+	void							removeChannel(std::string channelName);
 	Channel							*getChannel(std::string channelName) const;
 	Client							*getClientByName(std::string name) const;
 	std::string						getServerIp(void) const;

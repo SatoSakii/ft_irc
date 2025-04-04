@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 17:13:18 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/04 02:17:37 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/04 04:20:38 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,6 +144,15 @@ Client *Server::getClientByName(std::string name) const
 	return NULL;
 }
 
+void	Server::removeChannel(std::string channelName) {
+	std::map<std::string, Channel *>::iterator it = this->channels.find(channelName);
+
+	if (it != this->channels.end()) {
+		delete it->second;
+		this->channels.erase(it);
+	}
+}
+
 Channel	*Server::createChannel(std::string channelName, Client *client) {
 	Channel	*channel = new Channel(channelName);
 	this->channels[channelName] = channel;
@@ -272,6 +281,10 @@ void	Server::processClientMessage(Client *&client, const std::string &message) {
 		this->commandHandler->quitCommand(client, ircCommand);
 	else if (ircCommand.command == "JOIN")
 		this->commandHandler->joinCommand(client, ircCommand);
+	else if (ircCommand.command == "PART")
+		this->commandHandler->partCommand(client, ircCommand);
+	else if (ircCommand.command == "TOPIC")
+		this->commandHandler->topicCommand(client, ircCommand);
 }
 
 void	Server::handleClientMessage(Client *client) {

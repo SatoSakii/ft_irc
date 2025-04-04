@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 18:05:56 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/04 02:21:31 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/04 03:34:50 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,9 @@ void	Channel::addClient(Client *client) {
 }
 
 void	Channel::removeClient(int fd) {
-	if (this->clientOperator->getFd() == fd)
+	if (this->clientOperator && this->clientOperator->getFd() == fd)
 		this->clientOperator = NULL;
 	this->clients.erase(fd);
-	if (this->getClients().size() == 0)
-		delete this;
 }
 
 bool	Channel::isClientInChannel(Client *client) const {
@@ -63,6 +61,10 @@ bool	Channel::isFull(void) const {
 
 std::string	Channel::getTopic(void) const {
 	return this->topic;
+}
+
+void	Channel::setTopic(std::string topic) {
+	this->topic = topic;
 }
 
 bool	Channel::isOperator(Client *client) const {

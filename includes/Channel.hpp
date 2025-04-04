@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: sabartho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/01 17:20:33 by sabartho          #+#    #+#             */
-/*   Updated: 2025/04/04 02:20:43 by sabartho         ###   ########.fr       */
+/*   Created: 2025/04/01 17:20:33 by albernar          #+#    #+#             */
+/*   Updated: 2025/04/04 03:34:34 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ public:
 	bool		isFull(void) const;
 	bool		isOperator(Client *client) const;
 	void		setClientOperator(Client *client);
+	void		setTopic(std::string topic);
 	std::string	getPassword(void) const;
 	std::string	getTopic(void) const;
 	std::string getUserList(void) const;
