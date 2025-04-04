@@ -1,13 +1,12 @@
 TODOUCE:
-	NICK Command [GOOD] toutedouce: respect rfc for nickname characters
-	USER Command [GOOD]
-	PASS Command [GOOD]
-	QUIT Command [GOOD]
-	JOIN Command [GOOD]
-	PART Command [GOOD]
-	TOPIC Command [GOOD] add +t -t
-	INVITE Command [GOOD] fix
-	KICK Command [GOOD] fix
-	PRIVMSG Command [GOOD]
-	CAP LS 302 AT FIRST, HEXCHAT IS SHIT (skipped in pass, good i think)
-	please find bug sachounet
+	NICK Command	[FINISH]
+	USER Command	[FINISH]
+	PASS Command	[FINISH]
+	QUIT Command	[FINISH]
+	JOIN Command	[FINISH]
+	PART Command	[FINISH]
+	TOPIC Command	[GOOD] add +t -t
+	MODE Command	[IN PROGRESS]
+	INVITE Command	[FINISH]
+	KICK Command	[FINISH]
+	PRIVMSG Command [FINISH]
