@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 17:13:18 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/04 20:37:37 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/04 21:53:54 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -300,6 +300,8 @@ void	Server::processClientMessage(Client *&client, const std::string &message) {
 		this->commandHandler->kickCommand(client, ircCommand);
 	else if (ircCommand.command == "PRIVMSG")
 		this->commandHandler->privmsgCommand(client, ircCommand);
+	else if (ircCommand.command == "MODE")
+		this->commandHandler->modeCommand(client, ircCommand);
 }
 
 void	Server::handleClientMessage(Client *client) {
