@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 00:09:42 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/04 02:13:34 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/04 04:02:58 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,8 @@ void	CommandHandler::joinCommand(Client *client, IRCCommand ircCommand) {
 		}
 		channel->addClient(client);
 		//channel->removeInvitation(client);
-		client->sendMessage(RPL_JOIN(client->getNickname(), channelName));
-		channel->broadcastMessage(client, RPL_JOIN(client->getNickname(), channelName));
+		client->sendMessage(RPL_JOIN(client->getNickname(), client->getUsername(), client->getHostname(), channelName));
+		channel->broadcastMessage(client, RPL_JOIN(client->getNickname(), client->getUsername(), client->getHostname(), channelName));
 		if (!channel->getTopic().empty())
 			client->sendMessage(RPL_TOPIC(this->server->getServerIp(), client->getNickname(), channelName, channel->getTopic()));
 		client->sendMessage(RPL_NAMREPLY(this->server->getServerIp(), client->getNickname(), channelName, channel->getUserList()));

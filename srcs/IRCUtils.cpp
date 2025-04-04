@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 17:37:26 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/04 00:17:56 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/04 04:30:26 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,14 @@ IRCCommand	parseIRCCommand(std::string	message) {
 	std::istringstream	stream(message);
 	std::string			word;
 	std::string			trailing;
+	char				c;
 
 	if (stream >> ircCommand.command) {
 		while (stream >> word) {
 			if (!word.empty() && word[0] == ':') {
 				trailing = word.substr(1);
-				while (stream >> word)
-					trailing += " " + word;
+				while (stream.get(c))
+					trailing += c;
 				ircCommand.params.push_back(trailing);
 				break ;
 			}
