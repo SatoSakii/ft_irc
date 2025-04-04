@@ -49,7 +49,7 @@ void	CommandHandler::joinCommand(Client *client, IRCCommand ircCommand) {
 			continue ;
 		}
 		channel->addClient(client);
-		//channel->removeInvitation(client);
+		channel->removeInvitation(client);
 		client->sendMessage(RPL_JOIN(client->getNickname(), channelName));
 		channel->broadcastMessage(client, RPL_JOIN(client->getNickname(), channelName));
 		if (!channel->getTopic().empty())

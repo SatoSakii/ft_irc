@@ -65,6 +65,7 @@ public:
 	std::map<int, Client*>			getClients(void) const;
 	std::map<std::string, Channel*>	getChannels(void) const;
 	Channel							*getChannel(std::string channelName) const;
+	Client							*getClientByName(std::string name) const;
 	std::string						getServerIp(void) const;
 	std::string						getPassword(void) const;
 

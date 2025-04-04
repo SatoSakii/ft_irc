@@ -32,6 +32,7 @@ SRCS		:=	Channel.cpp \
 				commands/Nick.cpp \
 				commands/Quit.cpp \
 				commands/Join.cpp \
+				commands/Invite.cpp \
 
 SRCS		:=	$(addprefix $(SRC_DIR)/, $(SRCS))
 

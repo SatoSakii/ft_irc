@@ -135,6 +135,15 @@ Channel	*Server::getChannel(std::string channelName) const {
 	return NULL;
 }
 
+Client *Server::getClientByName(std::string name) const
+{
+	for (std::map<int, Client *>::const_iterator it = this->clients.begin(); it != clients.end(); ++it) {
+        if (it->second->getNickname() == name)
+            return it->second;
+    }
+	return NULL;
+}
+
 Channel	*Server::createChannel(std::string channelName, Client *client) {
 	Channel	*channel = new Channel(channelName);
 	this->channels[channelName] = channel;
