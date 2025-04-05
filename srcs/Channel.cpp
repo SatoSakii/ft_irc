@@ -76,8 +76,24 @@ std::string	Channel::getTopic(void) const {
 	return this->topic;
 }
 
+int	Channel::getMaxClients(void) const {
+	return this->maxClients;
+}
+
 void	Channel::setTopic(std::string topic) {
 	this->topic = topic;
+}
+
+void	Channel::setMaxClients(int number) {
+	this->maxClients = number;
+}
+
+void	Channel::setInviteOnly(bool value) {
+	this->inviteOnly = value;
+}
+
+void	Channel::setPassword(std::string password) {
+	this->password = password;
 }
 
 bool	Channel::isOperator(Client *client) const {

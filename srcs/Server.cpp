@@ -110,6 +110,10 @@ void	Server::stopServer(void) {
         delete it->second;
     }
     this->clients.clear();
+	for (std::map<std::string, Channel *>::iterator it = this->channels.begin(); it != this->channels.end(); ++it) {
+		delete it->second;
+	}
+	this->channels.clear();
     if (serverSocket >= 0) {
         close(serverSocket);
         serverSocket = -1;

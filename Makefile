@@ -36,7 +36,8 @@ SRCS		:=	Channel.cpp \
 				commands/Part.cpp \
 				commands/Topic.cpp \
 				commands/Kick.cpp \
-				commands/Privmsg.cpp
+				commands/Privmsg.cpp \
+				commands/Mode.cpp \
 
 SRCS		:=	$(addprefix $(SRC_DIR)/, $(SRCS))
 

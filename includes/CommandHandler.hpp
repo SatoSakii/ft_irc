@@ -57,6 +57,7 @@ public:
 # define ERR_CHANOPRIVSNEEDED(serverIp, channelName, nickname) (IRCResponse::error((serverIp), 482, (nickname) + " " + (channelName), "You're not channel operator"))
 # define ERR_CANNOTSENDTOCHAN(serverIp, channelName, nickname) (IRCResponse::error((serverIp), 404, (nickname) + " " + (channelName), "Cannot send to channel"))
 # define ERR_NORECIPIENT(serverIp, command, nickname) (IRCResponse::error((serverIp), 411, (nickname) + " " + (command), "No recipient given (" + (command) + ")"))
+# define ERR_UNKNOWNMODE(serverIp, channelName, nickname, command) (IRCResponse::error((serverIp), 472, (nickname) + " " + (command), "is unknown mode char to me for " + (channelName)))
 
 # define RPL_PRIVMSG(nickname, username, clientHost, target, message) (":" + (nickname) + "!" + (username) + "@" + (clientHost) + " PRIVMSG " + (target) + " :" + (message) + "\r\n")
 # define RPL_PART(nickname, username, clientHost, channelName) (":" + (nickname) + "!" + (username) + "@" + (clientHost) + " PART :" + (channelName) + "\r\n")
@@ -70,5 +71,6 @@ public:
 # define RPL_INVITING(serverIp, nickname, target, channelName) (":" + (serverIp) + " 341 " + (nickname) + " " + (target) + " " + (channelName) + "\r\n")
 # define RPL_INVITED(nickname, username, clientHost, target, channelName) (":" + (nickname) + "!" + (username) + "@" + (clientHost) + " INVITE " + (target) + " :" + (channelName) + "\r\n")
 # define RPL_KICK(nickname, username, clientHost, target, channelName, reason) (":" + (nickname) + "!" + (username) + "@" + (clientHost) + " KICK " + (channelName) + " " +(target) + " :" + (reason) + "\r\n")
+# define RPL_MODE(nickname, username, clientHost, channelName, param) (":" + (nickname) + "!" + (username) + "@" + (clientHost) + " MODE " + (channelName) + " " + (param) + "\r\n")
 
 #endif

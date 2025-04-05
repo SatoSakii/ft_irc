@@ -44,8 +44,12 @@ public:
 	bool		isOperator(Client *client) const;
 	void		setClientOperator(Client *client);
 	void		setTopic(std::string topic);
+	void		setMaxClients(int number);
+	int			getMaxClients(void) const;
 	std::string	getTopic(void) const;
 	void		setTopicSet(bool topicSet);
+	void		setInviteOnly(bool value);
+	void		setPassword(std::string password);
 	bool		getTopicSet(void) const;
 	std::string	getName(void) const;
 	std::string	getPassword(void) const;
