@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 00:09:42 by sabartho          #+#    #+#             */
-/*   Updated: 2025/04/04 21:53:12 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/05 04:51:34 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,6 +166,10 @@ void	CommandHandler::modeCommand(Client *client, IRCCommand ircCommand) {
         client->sendMessage(ERR_NOSUCHCHANNEL(this->server->getServerIp(), channelName, client->getNickname()));
         return ;
     }
+	if (!channel->isOperator(client)) {
+		client->sendMessage(ERR_CHANOPRIVSNEEDED(this->server->getServerIp(), channelName, client->getNickname()));
+		return ;
+	}
     for (size_t i = 1; i < ircCommand.params.size(); i++) {
         size_t pos1 = ircCommand.params[i].find('+');
         size_t pos2 = ircCommand.params[i].find('-');
