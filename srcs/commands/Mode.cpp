@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Mode.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: sabartho <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 00:09:42 by sabartho          #+#    #+#             */
-/*   Updated: 2025/04/05 04:51:34 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/04 21:53:12 by sabartho         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,9 @@ bool    __acceptValue(char value) {
 }
 
 void    changePermissions(char value, char status_mode, Channel *channel, std::string keys, int *it, Server *server, Client *clientExecutor) {
-    Client *client;
+    Client                  *client;
+    int                     setClientsNumber = 0;
+    std::stringstream       out;
 
     if (status_mode == '+') {
         switch (value) {
@@ -41,13 +43,15 @@ void    changePermissions(char value, char status_mode, Channel *channel, std::s
                 break;
             case 'l' :
                 (*it)++;
-                if (keys.empty()) {
+                if (keys.empty()) { 
                     clientExecutor->sendMessage(ERR_NEEDMOREPARAMS(server->getServerIp(), "MODE +l", clientExecutor->getNickname()));
                     return;
                 }
-                channel->setMaxClients(std::strtol(keys.c_str(), NULL, 0));
-                channel->broadcastMessage(clientExecutor, RPL_MODE(clientExecutor->getNickname(), clientExecutor->getUsername(), clientExecutor->getHostname(), channel->getName(), "+l " + keys));
-                clientExecutor->sendMessage(RPL_MODE(clientExecutor->getNickname(), clientExecutor->getUsername(), clientExecutor->getHostname(), channel->getName(), "+l " + keys));
+                setClientsNumber = (int)std::strtol(keys.c_str(), NULL, 0);
+                channel->setMaxClients(setClientsNumber);
+                out << setClientsNumber;
+                channel->broadcastMessage(clientExecutor, RPL_MODE(clientExecutor->getNickname(), clientExecutor->getUsername(), clientExecutor->getHostname(), channel->getName(), "+l " + out.str()));
+                clientExecutor->sendMessage(RPL_MODE(clientExecutor->getNickname(), clientExecutor->getUsername(), clientExecutor->getHostname(), channel->getName(), "+l " + out.str()));
                 break;
             case 'o' :
                 (*it)++;
@@ -132,7 +136,7 @@ void    __parsingValue(std::string str, Channel *channel, Server *server, std::v
 
     status_mode = str[0];
     for (size_t j = 1; j < str.size(); j++) {
-        if (str[j] == '+' || str[j] == '-') {
+        if ((str[j] == '+' || str[j] == '-') && j + 1 < str.size() && std::isalpha(str[j + 1])) {
             status_mode = str[j];
             continue ;
         }
@@ -145,9 +149,8 @@ void    __parsingValue(std::string str, Channel *channel, Server *server, std::v
         else
             str_key = keys[*key_index];
         changePermissions(str[j], status_mode, channel, str_key, key_index, server, client);
-        }
+    }
 }
-
 void	CommandHandler::modeCommand(Client *client, IRCCommand ircCommand) {
     std::string                 channelName;
     std::vector<std::string>    keys;
@@ -166,14 +169,23 @@ void	CommandHandler::modeCommand(Client *client, IRCCommand ircCommand) {
         client->sendMessage(ERR_NOSUCHCHANNEL(this->server->getServerIp(), channelName, client->getNickname()));
         return ;
     }
-	if (!channel->isOperator(client)) {
-		client->sendMessage(ERR_CHANOPRIVSNEEDED(this->server->getServerIp(), channelName, client->getNickname()));
-		return ;
-	}
+    if (!channel->isOperator(client)) {
+        client->sendMessage(ERR_CHANOPRIVSNEEDED(this->server->getServerIp(), channelName, client->getNickname()));
+        return ;
+    }
     for (size_t i = 1; i < ircCommand.params.size(); i++) {
-        size_t pos1 = ircCommand.params[i].find('+');
-        size_t pos2 = ircCommand.params[i].find('-');
-        if (pos1 == std::string::npos && pos2 == std::string::npos) {
+        std::string str = ircCommand.params[i];
+        size_t pos1 = str.find('+');
+        size_t pos2 = str.find('-');
+        std::cout << std::isalpha(str[pos2 + 1]) << std::endl;
+        std::cout << std::isalpha(str[pos1 + 1]) << std::endl;
+        if (pos1 + 1 == str.size())
+            return ;
+        if (pos2 + 1 == str.size())
+            return ;
+        if ((pos1 == std::string::npos && pos2 == std::string::npos)
+        || (pos2 != std::string::npos && !std::isalpha(str[pos2 + 1]))
+        || (pos1 != std::string::npos && !std::isalpha(str[pos1 + 1]))) {
             stop_flag = i;
             for (size_t j = i; j < ircCommand.params.size(); j++) {
                 keys.push_back(ircCommand.params[j]);
