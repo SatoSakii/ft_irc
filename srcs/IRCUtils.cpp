@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 17:37:26 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/04 04:30:26 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/07 23:15:43 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,4 +56,18 @@ std::vector<std::string>	IRCUtils::splitString(const std::string &str, const std
 	}
 	tokens.push_back(str.substr(start));
 	return (tokens);
+}
+
+bool	IRCUtils::startsWith(const std::string &str, const std::string &prefix)  {
+	return (str.compare(0, prefix.length(), prefix) == 0);
+}
+
+bool	IRCUtils::equalsIgnoreCase(const std::string &str1, const std::string &str2) {
+	if (str1.length() != str2.length())
+		return (false);
+	for (size_t i = 0; i < str1.length(); ++i) {
+		if (std::tolower(str1[i]) != std::tolower(str2[i]))
+			return (false);
+	}
+	return (true);
 }

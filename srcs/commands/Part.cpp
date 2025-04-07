@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 02:48:46 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/04 05:22:11 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/07 23:16:39 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,8 @@ void	CommandHandler::partCommand(Client *client, IRCCommand ircCommand) {
 		channel->broadcastMessage(client, RPL_PART(client->getNickname(), client->getUsername(), client->getHostname(), channelName + " :" + partMessage));
 		channel->removeClient(client);
 		channel->removeInvitation(client);
-		if (channel->getClients().empty())
+		if (channel->getClients().empty() ||
+			(channel->getClients().size() == 1 && IRCUtils::equalsIgnoreCase(channel->getName(), "#bot")))
 			this->server->removeChannel(channelName);
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 00:09:42 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/04 20:33:50 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/07 23:16:47 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,8 @@ void	CommandHandler::joinCommand(Client *client, IRCCommand ircCommand) {
 		if (!channel)
 			channel = this->server->createChannel(channelName, client);
 		channelName = channel->getName();
-		std::cout << "Channel name: " << channelName << std::endl;
+		if (IRCUtils::equalsIgnoreCase(channel->getName(), "#bot"))
+			channel->addClient(this->server->getClientByName("_Tralalelo"));
 		if (channel->isInviteOnly() && !channel->isInvited(client)) {
 			client->sendMessage(ERR_INVITEONLYCHAN(this->server->getServerIp(), channelName, client->getNickname()));
 			continue ;

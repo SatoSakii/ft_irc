@@ -6,13 +6,13 @@
 #    By: albernar <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/16 17:32:26 by albernar          #+#    #+#              #
-#    Updated: 2025/04/04 20:15:59 by albernar         ###   ########.fr        #
+#    Updated: 2025/04/08 00:20:30 by albernar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 # VARIABLES
 CC 			:=	c++
-FLAGS 		:=	-Wall -Wextra -Werror -std=c++98 -g
+FLAGS 		:=	-Wall -Wextra -Werror -std=c++98 -g -DBONUS
 
 # INCLUDES
 INCLUDES	:=	-Iincludes
@@ -38,31 +38,22 @@ SRCS		:=	Channel.cpp \
 				commands/Kick.cpp \
 				commands/Privmsg.cpp \
 				commands/Mode.cpp \
+				bonus/Bot.cpp
 
 SRCS		:=	$(addprefix $(SRC_DIR)/, $(SRCS))
 
-SRCS_BONUS	:=	main.cpp
-SRCS_BONUS	:=	$(addprefix $(SRC_DIR)/, $(SRCS_BONUS))
-
 # OBJECTS
 OBJS		=	$(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRCS))
-OBJS_BONUS	=	$(patsubst $(SRC_DIR)/%.cpp, $(OBJ_DIR)/%.o, $(SRCS_BONUS))
 
 # EXECUTABLES
 NAME = ircserv
-NAME_BONUS = ircserv_bonus
 
 # RULES
 all: $(NAME)
-bonus: $(NAME_BONUS)
 
 $(NAME): $(OBJS)
 	@$(CC) $(FLAGS) $(INCLUDES) $(OBJS) -o $(NAME)
 	@echo " $(GREEN)$(BOLD)$(ITALIC)■$(RESET)  building	$(GREEN)$(BOLD)$(ITALIC)$(NAME)$(RESET)"
-
-$(NAME_BONUS): $(OBJS_BONUS)
-	@$(CC) $(FLAGS) $(INCLUDES) $(OBJS_BONUS) -o $(NAME_BONUS)
-	@echo " $(GREEN)$(BOLD)$(ITALIC)■$(RESET)  building	$(GREEN)$(BOLD)$(ITALIC)$(NAME_BONUS)$(RESET)"
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
 	@mkdir -p $(dir $@)
@@ -75,11 +66,11 @@ clean:
 	
 fclean: clean
 	@echo "$(RED)Cleaning executables...$(RESET)"
-	@rm -f $(NAME) $(NAME_BONUS)
+	@rm -f $(NAME)
 	
 re: fclean all
 
-.PHONY: all bonus clean fclean re
+.PHONY: all clean fclean re
 
 BLACK		=	\033[30m
 RED			=	\033[31m

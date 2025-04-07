@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 17:13:18 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/04 21:53:54 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/07 21:31:56 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,12 @@ void	Server::runServer(void) {
     serverEvent.events = EPOLLIN;
     serverEvent.data.fd = serverSocket;
     if (epoll_ctl(this->epollInstance, EPOLL_CTL_ADD, serverSocket, &serverEvent) < 0)
-        throw std::runtime_error("Error adding server socket to epoll");
+		throw std::runtime_error("Error adding server socket to epoll");
+	this->clients[-1] = new Client(-1, this->serverIp);
+	this->clients[-1]->setAuth(true);
+	this->clients[-1]->setNickname("_Tralalelo");
+	this->clients[-1]->setUsername("_Tralala");
+	this->clients[-1]->setHostname(this->serverIp);
     while (isRunning) {
         eventCount = epoll_wait(this->epollInstance, events, 1024, -1);
         if (eventCount < 0)
@@ -106,7 +111,8 @@ void	Server::runServer(void) {
 void	Server::stopServer(void) {
 	this->isRunning = false;
 	for (std::map<int, Client*>::iterator it = this->clients.begin(); it != this->clients.end(); ++it) {
-        close(it->first);
+		if (it->first != -1)
+        	close(it->first);
         delete it->second;
     }
     this->clients.clear();

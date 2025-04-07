@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 17:24:12 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/03 23:33:43 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/07 21:29:06 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ public:
 	void		setAuthLevel(short authLevel);
 
 	std::string	getHostname(void) const;
+	void		setHostname(std::string hostname);
 
 	void		appendToBuffer(std::string message);
 	std::string	getBuffer(void) const;

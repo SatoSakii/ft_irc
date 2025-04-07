@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 17:41:36 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/02 17:23:24 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/07 21:38:10 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,10 @@ void	Client::setAuthLevel(short authLevel) {
 
 std::string	Client::getHostname(void) const { return this->hostname; }
 
+void	Client::setHostname(std::string hostname) {
+	this->hostname = hostname;
+}
+
 std::string	Client::getNickname(void) const { return this->nickname; }
 
 void	Client::setNickname(std::string nickname) {
@@ -62,6 +66,8 @@ void	Client::clearBuffer(void) {
 
 void	Client::sendMessage(std::string message) {
 	if (message.empty())
+		return ;
+	if (this->fd == -1)
 		return ;
 	if (send(this->fd, message.c_str(), message.length(), 0) < 0)
 		std::cerr << "Error sending message to client" << std::endl;
