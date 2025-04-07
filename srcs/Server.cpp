@@ -16,7 +16,7 @@ Server	*Server::instance = NULL;
 
 void	Server::signalHandler(int signum) {
 	if (signum == SIGINT || signum == SIGQUIT) {
-		std::cout << "Stopping server..." << std::endl;
+		std::cout << std::endl <<"\e[1;31mStopping server...\e[0m" << std::endl;
 		if (instance)
 			instance->stopServer();
 	}
@@ -67,10 +67,20 @@ void	Server::serverInit(void) {
 	if (!host)
 		throw std::runtime_error("Error getting host by name");
 	this->serverIp = inet_ntoa(*(struct in_addr*)host->h_addr_list[0]);
-	std::cout << "-----------------" << std::endl;
-	std::cout << "IP > " << this->serverIp << std::endl; 
-	std::cout << "Port > " << serverPort << std::endl;
-	std::cout << "-----------------" << std::endl;
+	std::cout << std::endl << std::endl;
+	std::cout << "\e[1;36m╔───────────────────────────────────────────────╗" << std::endl;
+	std::cout << "\e[1;36m│   ███████╗████████╗     ██╗██████╗  ██████╗   │" << std::endl;
+	std::cout << "\e[1;36m│   ██╔════╝╚══██╔══╝     ██║██╔══██╗██╔════╝   │" << std::endl;
+	std::cout << "\e[1;36m│   █████╗     ██║        ██║██████╔╝██║        │" << std::endl;
+	std::cout << "\e[1;36m│   ██╔══╝     ██║        ██║██╔══██╗██║        │" << std::endl;
+	std::cout << "\e[1;36m│   ██║        ██║███████╗██║██║  ██║╚██████╗   │" << std::endl;
+	std::cout << "\e[1;36m│   ╚═╝        ╚═╝╚══════╝╚═╝╚═╝  ╚═╝ ╚═════╝   │" << std::endl;
+	std::cout << "\e[1;36m╚───────────────────────────────────────────────╝" << std::endl << std::endl;
+	std::cout << "\e[1;32m🚀 Server started successfully" << std::endl << std::endl;
+	std::cout << "\e[1;34m=================================================" << std::endl;
+	std::cout << "\e[1;33m⭐ IP    : " << this->serverIp << std::endl; 
+	std::cout << "\e[1;33m🔌 Port  : " << this->serverPort << std::endl;
+	std::cout << "\e[1;34m=================================================\e[0m" << std::endl << std::endl;
     Server::runServer();
 }
 
@@ -283,9 +293,6 @@ void	Server::processClientMessage(Client *&client, const std::string &message) {
 	if (!client)
 		return ;
 	ircCommand = parseIRCCommand(message);
-	std::cout << "Received command: " << ircCommand.command << std::endl;
-	for (std::vector<std::string>::iterator it = ircCommand.params.begin(); it != ircCommand.params.end(); ++it)
-		std::cout << "Param: " << *it << std::endl;
 	if (!client->isAuth())
 	{
 		if (Server::CheckAuthProtocol(client, ircCommand) && client)

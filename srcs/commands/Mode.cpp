@@ -177,8 +177,6 @@ void	CommandHandler::modeCommand(Client *client, IRCCommand ircCommand) {
         std::string str = ircCommand.params[i];
         size_t pos1 = str.find('+');
         size_t pos2 = str.find('-');
-        std::cout << std::isalpha(str[pos2 + 1]) << std::endl;
-        std::cout << std::isalpha(str[pos1 + 1]) << std::endl;
         if (pos1 + 1 == str.size())
             return ;
         if (pos2 + 1 == str.size())
