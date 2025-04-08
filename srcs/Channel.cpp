@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 18:05:56 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/04 20:31:06 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/08 16:54:32 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,22 @@ void	Channel::setTopicSet(bool topicSet) {
 
 bool	Channel::getTopicSet(void) const {
 	return this->topicSet;
+}
+
+void	Channel::setTopicTime(int topicTime) {
+	this->topicTime = topicTime;
+}
+
+int	Channel::getTopicTime(void) const {
+	return this->topicTime;
+}
+
+void	Channel::setTopicAuthor(Client *client) {
+	this->topicAuthor = client;
+}
+
+Client	*Channel::getTopicAuthor(void) const {
+	return this->topicAuthor;
 }
 
 void	Channel::removeClient(Client *client) {

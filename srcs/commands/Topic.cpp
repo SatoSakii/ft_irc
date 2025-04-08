@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 03:29:47 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/04 19:21:11 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/08 17:13:41 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,10 @@ void	CommandHandler::topicCommand(Client *client, IRCCommand ircCommand) {
 		if (channel->getTopic().empty())
 			client->sendMessage(RPL_NOTOPIC(this->server->getServerIp(), client->getNickname(), channelName));
 		else
+		{
 			client->sendMessage(RPL_TOPIC(this->server->getServerIp(), client->getNickname(), channelName, channel->getTopic()));
+			client->sendMessage(RPL_TOPICWHOTIME(this->server->getServerIp(), channelName, channel->getTopicAuthor()->getUsername(), channel->getTopicAuthor()->getHostname(), client->getNickname(), channel->getTopicAuthor()->getNickname(), IRCUtils::to_string(channel->getTopicTime())));
+		}
 		return ;
 	}
 	if (channel->getTopicSet() && !channel->isOperator(client)) {
@@ -47,6 +50,8 @@ void	CommandHandler::topicCommand(Client *client, IRCCommand ircCommand) {
 		channel->broadcastMessage(client, RPL_NOTOPIC(this->server->getServerIp(), client->getNickname(), channelName));
 	} else {
 		channel->setTopic(ircCommand.params[1]);
+		channel->setTopicAuthor(client);
+		channel->setTopicTime(time(NULL));
 		client->sendMessage(RPL_TOPIC(this->server->getServerIp(), client->getNickname(), channelName, ircCommand.params[1]));
 		channel->broadcastMessage(client, RPL_TOPIC(this->server->getServerIp(), client->getNickname(), channelName, ircCommand.params[1]));
 	}

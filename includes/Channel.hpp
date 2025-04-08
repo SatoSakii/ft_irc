@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 17:20:33 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/07 21:25:13 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/08 16:54:23 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,8 @@ private:
 	std::map<int, Client*>	clients;
 	std::vector<Client *>	invitedClients;
 	std::vector<Client *>	clientsOperator;
+	int						topicTime;
+	Client					*topicAuthor;
 	int						maxClients; // +l <limit> | -l
 	bool					inviteOnly; // +i | -i
 	bool					topicSet; // +t | -t {true = only operators can set topic | false = everyone can set topic}
@@ -51,13 +53,15 @@ public:
 	void		setInviteOnly(bool value);
 	void		setPassword(std::string password);
 	bool		getTopicSet(void) const;
+	void		setTopicTime(int topicTime);
+	int			getTopicTime(void) const;
+	void		setTopicAuthor(Client *client);
+	Client		*getTopicAuthor(void) const;
 	std::string	getName(void) const;
 	std::string	getPassword(void) const;
 	std::string getUserList(void) const;
 	std::map<int, Client *> getClients(void) const;
 	std::vector<Client *> getInvitedClients(void) const;
-
-	
 
 	void	broadcastMessage(Client *client, std::string message) const;
 };

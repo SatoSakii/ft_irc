@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 17:00:08 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/04 20:15:22 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/08 17:11:51 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ public:
 # define ERR_NORECIPIENT(serverIp, command, nickname) (IRCResponse::error((serverIp), 411, (nickname) + " " + (command), "No recipient given (" + (command) + ")"))
 # define ERR_UNKNOWNMODE(serverIp, channelName, nickname, command) (IRCResponse::error((serverIp), 472, (nickname) + " " + (command), "is unknown mode char to me for " + (channelName)))
 
+# define RPL_TOPICWHOTIME(serverIp, channelName , username, clientHost, nickname, authorname, time) (":" + (serverIp) + " 333 " + (nickname) + " " + (channelName) + " " + (authorname) + "!" + (username) + "@" + (clientHost) + " " + (time) + "\r\n")
 # define RPL_PRIVMSG(nickname, username, clientHost, target, message) (":" + (nickname) + "!" + (username) + "@" + (clientHost) + " PRIVMSG " + (target) + " :" + (message) + "\r\n")
 # define RPL_PART(nickname, username, clientHost, channelName) (":" + (nickname) + "!" + (username) + "@" + (clientHost) + " PART :" + (channelName) + "\r\n")
 # define RPL_JOIN(nickname, username, clientHost, channelName) (":" + (nickname) + "!" + (username) + "@" + (clientHost) + " JOIN :" + (channelName) + "\r\n")

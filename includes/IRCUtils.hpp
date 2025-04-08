@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/01 17:06:32 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/07 23:15:44 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/08 16:59:25 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,12 @@ public:
 	static std::vector <std::string>	splitString(const std::string &str, const std::string &delimiter);
 	static bool							startsWith(const std::string &str, const std::string &prefix);
 	static bool							equalsIgnoreCase(const std::string &str1, const std::string &str2);
+	template <typename T>
+	static std::string					to_string(const T& value) {
+		std::ostringstream oss;
+		oss << value;
+		return oss.str();
+	}
 };
 
 class IRCResponse
