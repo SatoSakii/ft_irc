@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 02:48:46 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/07 23:16:39 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/08 17:41:53 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,8 @@ void	CommandHandler::partCommand(Client *client, IRCCommand ircCommand) {
 		channel->removeClient(client);
 		channel->removeInvitation(client);
 		if (channel->getClients().empty() ||
-			(channel->getClients().size() == 1 && IRCUtils::equalsIgnoreCase(channel->getName(), "#bot")))
+			(channel->getClients().size() == 1 && IRCUtils::equalsIgnoreCase(channel->getName(), "#bot")
+			&& channel->getClients().begin()->second == this->server->getClientByName("_Tralalelo")))
 			this->server->removeChannel(channelName);
 	}
 }
