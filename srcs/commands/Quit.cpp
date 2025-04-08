@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 18:36:39 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/04 20:15:40 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/08 17:43:38 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,10 @@ void	CommandHandler::quitCommand(Client *&client, IRCCommand ircCommand) {
 		if (it->second->isClientInChannel(client)) {
 			it->second->broadcastMessage(client, RPL_QUIT(client->getNickname(), client->getUsername(), client->getHostname(), quitMessage));
 			it->second->removeClient(client);
+			if (it->second->getClients().empty() || (it->second->getClients().size() == 1
+				&& IRCUtils::equalsIgnoreCase(it->second->getName(), "#bot")
+				&& it->second->getClients().begin()->second == this->server->getClientByName("_Tralalelo")))
+				this->server->removeChannel(it->first);
 		}
 	}
 	client->sendMessage(RPL_QUIT(client->getNickname(), client->getUsername(), client->getHostname(), quitMessage));
