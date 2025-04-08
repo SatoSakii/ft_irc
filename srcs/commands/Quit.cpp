@@ -31,6 +31,7 @@ void	CommandHandler::quitCommand(Client *&client, IRCCommand ircCommand) {
 		}
 	}
 	client->sendMessage(RPL_QUIT(client->getNickname(), client->getUsername(), client->getHostname(), quitMessage));
+	std::cout << "[-] " << client->getNickname() << std::endl;
 	this->server->disconnectClient(client);
 	client = NULL;
 }

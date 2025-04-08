@@ -243,7 +243,6 @@ void	Server::acceptNewClient(void) {
 	else
 		ip = this->serverIp;
     this->clients[newClientFd] = new Client(newClientFd, ip);
-    std::cout << "New client connected" << std::endl;
 }
 
 bool	Server::CheckAuthProtocol(Client *&client, IRCCommand ircCommand) {
@@ -279,6 +278,7 @@ bool	Server::CheckAuthProtocol(Client *&client, IRCCommand ircCommand) {
 			if (client->getUsername().empty())
 				return false;
 			client->setAuth(true);
+			std::cout << "[+] " << client->getNickname() << std::endl;
 			return true;
 		} else {
 			client->sendMessage(ERR_NOTREGISTERED(this->serverIp, client->getNickname()));
@@ -334,7 +334,7 @@ void	Server::handleClientMessage(Client *client) {
 		client->appendToBuffer(buffer);	
 	}
     if (bytesRead == 0) {
-        std::cout << "Client disconnected" << std::endl;
+        std::cout << "[-] " << client->getNickname() << std::endl;
         Server::disconnectClient(client);
         return ;
     }
