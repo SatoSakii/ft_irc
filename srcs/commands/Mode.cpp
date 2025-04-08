@@ -151,6 +151,27 @@ void    __parsingValue(std::string str, Channel *channel, Server *server, std::v
         changePermissions(str[j], status_mode, channel, str_key, key_index, server, client);
     }
 }
+
+void printModes(Server *server, Client *client, Channel *channel) {
+    std::string str = "+";
+    if (channel->getTopicSet())
+        str += "t";
+    if (channel->isInviteOnly())
+        str += "i";
+    if (channel->getMaxClients() != __INT_MAX__)
+        str += "l";
+    if (channel->isPasswordProtected())
+        str += "k";
+    if (channel->getMaxClients() != __INT_MAX__) {
+        std::ostringstream os;
+        os << channel->getMaxClients();
+        str += " " + os.str();
+    }
+    if (channel->isPasswordProtected())
+        str += " " + channel->getPassword();
+    client->sendMessage(RPL_CHANNELMODEIS(server->getServerIp(), channel->getName(), client->getNickname(), str));
+}
+
 void	CommandHandler::modeCommand(Client *client, IRCCommand ircCommand) {
     std::string                 channelName;
     std::vector<std::string>    keys;
@@ -158,7 +179,7 @@ void	CommandHandler::modeCommand(Client *client, IRCCommand ircCommand) {
     int                         stop_flag = ircCommand.params.size();
     int                         key_index = 0;
 
-    if (ircCommand.params.size() < 2) {
+    if (ircCommand.params.size() < 1) {
 		client->sendMessage(ERR_NEEDMOREPARAMS(this->server->getServerIp(), "MODE", client->getNickname()));
 		return ;
 	}
@@ -168,6 +189,10 @@ void	CommandHandler::modeCommand(Client *client, IRCCommand ircCommand) {
     if (!channel) {
         client->sendMessage(ERR_NOSUCHCHANNEL(this->server->getServerIp(), channelName, client->getNickname()));
         return ;
+    }
+    if (ircCommand.params.size() == 1) {
+        printModes(this->server, client, channel);
+		return ;
     }
     if (!channel->isOperator(client)) {
         client->sendMessage(ERR_CHANOPRIVSNEEDED(this->server->getServerIp(), channelName, client->getNickname()));

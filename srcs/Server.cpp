@@ -78,8 +78,9 @@ void	Server::serverInit(void) {
 	std::cout << "\e[1;36m╚───────────────────────────────────────────────╝" << std::endl << std::endl;
 	std::cout << "\e[1;32m🚀 Server started successfully" << std::endl << std::endl;
 	std::cout << "\e[1;34m=================================================" << std::endl;
-	std::cout << "\e[1;33m⭐ IP    : " << this->serverIp << std::endl; 
-	std::cout << "\e[1;33m🔌 Port  : " << this->serverPort << std::endl;
+	std::cout << "\e[1;33m⭐ IP        : " << this->serverIp << std::endl; 
+	std::cout << "\e[1;33m🔌 Port      : " << this->serverPort << std::endl;
+	std::cout << "\e[1;33m🔐 Password  : " << this->serverPassword << std::endl;
 	std::cout << "\e[1;34m=================================================\e[0m" << std::endl << std::endl;
     Server::runServer();
 }

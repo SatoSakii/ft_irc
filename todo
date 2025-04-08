@@ -5,8 +5,8 @@ TODOUCE:
 	QUIT Command	[FINISH]
 	JOIN Command	[FINISH]
 	PART Command	[FINISH]
-	TOPIC Command	[GOOD] add +t -t
-	MODE Command	[IN PROGRESS]
+	TOPIC Command	[FINISH]
+	MODE Command	[FINISH]
 	INVITE Command	[FINISH]
 	KICK Command	[FINISH]
 	PRIVMSG Command [FINISH]

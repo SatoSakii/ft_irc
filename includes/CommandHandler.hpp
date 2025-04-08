@@ -72,5 +72,6 @@ public:
 # define RPL_INVITED(nickname, username, clientHost, target, channelName) (":" + (nickname) + "!" + (username) + "@" + (clientHost) + " INVITE " + (target) + " :" + (channelName) + "\r\n")
 # define RPL_KICK(nickname, username, clientHost, target, channelName, reason) (":" + (nickname) + "!" + (username) + "@" + (clientHost) + " KICK " + (channelName) + " " +(target) + " :" + (reason) + "\r\n")
 # define RPL_MODE(nickname, username, clientHost, channelName, param) (":" + (nickname) + "!" + (username) + "@" + (clientHost) + " MODE " + (channelName) + " " + (param) + "\r\n")
+# define RPL_CHANNELMODEIS(serverIp, channelName ,nickname, string) (":" + (serverIp) + " 324 " + (nickname) + " " + (channelName) + " " + (string) + "\r\n")
 
 #endif
