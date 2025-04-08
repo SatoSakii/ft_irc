@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 20:06:25 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/07 23:16:22 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/08 17:37:19 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,8 @@ void	CommandHandler::privmsgCommand(Client *client, IRCCommand ircCommand) {
 				continue ;
 			}
 			#ifdef BONUS
-			if (IRCUtils::equalsIgnoreCase(channel->getName(), "#bot") && IRCUtils::startsWith(messageText, "!transform"))
+			if (IRCUtils::equalsIgnoreCase(channel->getName(), "#bot") && IRCUtils::startsWith(messageText, "!transform")
+				&& channel->isClientInChannel(this->server->getClientByName("_Tralalelo")))
 				botCommand = BotCommands::transformCommand(messageText);
 			#endif
 			channel->broadcastMessage(client, RPL_PRIVMSG(client->getNickname(), client->getUsername(), client->getHostname(), target, botCommand));
