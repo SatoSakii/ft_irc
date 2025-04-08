@@ -6,7 +6,7 @@
 /*   By: albernar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/04 00:09:42 by albernar          #+#    #+#             */
-/*   Updated: 2025/04/07 23:16:47 by albernar         ###   ########.fr       */
+/*   Updated: 2025/04/08 17:19:16 by albernar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,10 @@ void	CommandHandler::joinCommand(Client *client, IRCCommand ircCommand) {
 		client->sendMessage(RPL_JOIN(client->getNickname(), client->getUsername(), client->getHostname(), channelName));
 		channel->broadcastMessage(client, RPL_JOIN(client->getNickname(), client->getUsername(), client->getHostname(), channelName));
 		if (!channel->getTopic().empty())
+		{
 			client->sendMessage(RPL_TOPIC(this->server->getServerIp(), client->getNickname(), channelName, channel->getTopic()));
+			client->sendMessage(RPL_TOPICWHOTIME(this->server->getServerIp(), channelName, channel->getTopicAuthor()->getUsername(), channel->getTopicAuthor()->getHostname(), client->getNickname(), channel->getTopicAuthor()->getNickname(), IRCUtils::to_string(channel->getTopicTime())));
+		}
 		client->sendMessage(RPL_NAMREPLY(this->server->getServerIp(), client->getNickname(), channelName, channel->getUserList()));
 		client->sendMessage(RPL_ENDOFNAMES(this->server->getServerIp(), client->getNickname(), channelName));
 	}
